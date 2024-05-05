@@ -1,9 +1,9 @@
 {
   "name": "not-charge",
-  "description": "a uniapp applet about account management",
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@9.0.6",
+  "description": "a uniapp applet about account management",
   "scripts": {
     "dev": "uni",
     "dev:app": "uni -p app",
