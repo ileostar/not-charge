@@ -1,31 +1,65 @@
-<p align="center">
-  <img src="https://github.com/uni-helper/vitesse-uni-app/raw/main/.github/images/preview.png" width="300"/>
-</p>
+# Not-Charge
 
-<h2 align="center">
-Vitesse for uni-app
-</h2>
-<p align="center">
-  <a href="https://vitesse-uni-app.netlify.app/">📱 在线预览</a>
-  <a href="https://vitesse-docs.netlify.app/">📖 阅读文档</a>
-</p>
+一个轻量级的微信小程序，用于记账
 
-## 特性
+## Features
 
-- ⚡️ [Vue 3](https://github.com/vuejs/core), [Vite](https://github.com/vitejs/vite), [pnpm](https://pnpm.io/), [esbuild](https://github.com/evanw/esbuild) - 就是快！
+- 轻量级，无服务器，无广告
+- 快速记账
+- 可视化统计
+- GPT 支持
+- 云同步
+- 语音输入、OCR扫描
 
-- 🗂 [基于文件的路由](./src/pages)
+## Tech Stack
 
-- 📦 [组件自动化加载](./src/components)
+- [Vue.js](https://vuejs.org/)
+- [UnoCSS](https://unocss.dev/)
+- [Vite](https://vitejs.dev/)
+- [typescript](https://www.tslang.cn/)
+- [uniapp](https://zh.uniapp.dcloud.io/)
+- [uni-helper](https://uni-helper.js.org/)
 
-- 📑 [布局系统](./src/layouts)
+## Process
 
-- 🎨 [UnoCSS](https://github.com/unocss/unocss) - 高性能且极具灵活性的即时原子化 CSS 引擎
+### UI Design
 
-- 😃 [各种图标集为你所用](https://github.com/antfu/unocss/tree/main/packages/preset-icons)
+[UI设计稿](https://www.ui.cn/detail/482437.html)
 
-- 🔥 使用 [新的 `<script setup>` 语法](https://github.com/vuejs/rfcs/pull/227)
+### Frontend
 
-- 📥 [API 自动加载](https://github.com/antfu/unplugin-auto-import) - 直接使用 Composition API 无需引入
+- [ ] 基本页面框架搭建
+- [ ] 小程序登录
+- [ ] 用户界面实现
+- [ ] 首页实现
+- [ ] 添加账单页面
+- [ ] 数据可视化
 
-- 🦾 [TypeScript](https://www.typescriptlang.org/) & [ESLint](https://eslint.org/) - 保证代码质量
+### Backend
+
+- [ ] 建表
+- [ ] 小程序登录接口
+- [ ] 用户相关接口
+- [ ] 账本相关接口
+- [ ] 账单相关接口
+- [ ] 数据可视化接口
+
+## Usage
+
+### Install Dependencies
+
+```bash
+pnpm install
+```
+
+### Development Environment Run
+
+```bash
+pnpm dev:mp-weixin
+```
+
+微信开发者工具打开`dist/dev/mp-weixin`目录
+
+## Contributors
+
+Contributions are welcome, PR is welcome, More references LeoStar's [Contribute](https://github.com/ileostar/contribute)
