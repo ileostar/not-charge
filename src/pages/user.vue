@@ -1,9 +1,9 @@
 <template>
   <view class="profile-container h-full w-full bg-gray-100">
     <!-- 上部分 -->
-    <view class="top-section flex items-center justify-between bg-white">
+    <view class="top-section flex items-center justify-between bg-white p-5">
       <view class="flex items-center">
-        <image class="user-avatar rounded-full" src="../static/user.jpg" mode="aspectFill" />
+        <image class="user-avatar rounded-full" src="../static/vite.png" mode="aspectFill" />
         <view class="ml-4">
           <text class="font-bold">
             阿木木
@@ -13,7 +13,7 @@
           </text>
         </view>
       </view>
-      <button class="sign-in-button h-6 w-9 rounded-full bg-yellow-500 py-2 text-white">
+      <button class="sign-in-button w-15 rounded-r-full bg-yellow-500 px-4 py-2 text-white">
         签到
       </button>
     </view>
@@ -48,90 +48,36 @@
 
     <!-- 中间部分 -->
     <view class="middle-section mt-2 bg-white">
-      <navigator url="/pages/accountManagement" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:notebook-and-pen />
-          <text class="ml-1.25">
-            账本管理
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/accountManagement" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>账本管理</text>
       </navigator>
-      <navigator url="/pages/importAccount" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:file-addition />
-          <text class="ml-1.25">
-            账本导入
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/importAccount" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>账本导入</text>
       </navigator>
-      <navigator url="/pages/budget" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:financing-one />
-          <text class="ml-1.25">
-            我的预算
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/budget" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>我的预算</text>
       </navigator>
-      <navigator url="/pages/bankCards" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:bank-card />
-          <text class="ml-1.25">
-            银行卡
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/bankCards" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>银行卡</text>
       </navigator>
-      <navigator url="/pages/reminders" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:alarm-clock />
-          <text class="ml-1.25">
-            定时提醒
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/reminders" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>定时提醒</text>
       </navigator>
-      <navigator url="/pages/salaryCalculator" class="block flex items-center justify-between border-b border-gray-200 py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:calculator-one />
-          <text class="ml-1.25">
-            工资计算器
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/salaryCalculator" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>工资计算器</text>
       </navigator>
     </view>
 
     <!-- 下部分 -->
-    <view class="bottom-section mt-2 bg-white pb-23">
-      <navigator url="/pages/gestureLock" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:electronic-locks-close />
-          <text class="ml-1.25">
-            手势密码
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+    <view class="bottom-section mt-2 bg-white">
+      <navigator url="/pages/gestureLock" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>手势密码</text>
       </navigator>
-      <navigator url="/pages/about" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:trumpet />
-          <text class="ml-1.25">
-            关于
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/about" class="block flex items-center border-b border-gray-200 px-4 py-3">
+        <text>关于</text>
       </navigator>
-      <navigator url="/pages/settings" class="block flex items-center justify-between py-3">
-        <view class="flex items-center">
-          <span class="icon iconify" i-icon-park:setting />
-          <text class="ml-1.25">
-            设置
-          </text>
-        </view>
-        <span i-icon-park:go-end />
+      <navigator url="/pages/settings" class="block flex items-center px-4 py-3">
+        <text>设置</text>
       </navigator>
     </view>
   </view>
@@ -146,14 +92,7 @@
   height: 55px;
 }
 .sign-in-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-width: 70px;
   border-radius: 9999px; /* 半圆按钮 */
-  font-size: 15px
-}
-.iconify {
-  color: #f8c43d; /* 默认颜色，可以根据需要修改 */
 }
 </style>
