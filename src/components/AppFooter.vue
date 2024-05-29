@@ -22,4 +22,4 @@ function handleClickGithub() {
       <view i-carbon:logo-github />
     </view>
   </view>
-</template>
+</template>·
