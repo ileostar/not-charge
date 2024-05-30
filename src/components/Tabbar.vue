@@ -3,18 +3,26 @@ function getActionClass(param: string) {
   const routes = getCurrentPages()
   return routes[routes.length - 1].route?.split('/')[1] === param ? 'color-green text-7 mb-5' : 'mb-5'
 }
+
+function switchPage(url: string) {
+  uni.redirectTo({
+    url,
+    animationType: 'fade-in',
+    animationDuration: 200,
+  })
+}
 </script>
 
 <template>
-  <view text="6.5" bg="white/10" border-box h-23 w-full flex items-center justify-around rd-5>
-    <navigator :class="getActionClass('index')" url="/pages/index" mb-5>
+  <view text="6.5" bg="white/10" border-box fixed bottom-0 z-99 h-23 w-full flex items-center justify-around rd-5>
+    <view :class="getActionClass('index')" mb-5 @click="switchPage('/pages/index')">
       <span i-carbon:home />
-    </navigator>
-    <navigator :class="getActionClass('report')" url="/pages/report" mb-5>
+    </view>
+    <view :class="getActionClass('report')" mb-5 @click="switchPage('/pages/report')">
       <span i-carbon:ibm-secure-infrastructure-on-vpc-for-regulated-industries />
-    </navigator>
-    <navigator :class="getActionClass('user')" url="/pages/user" mb-5>
+    </view>
+    <view :class="getActionClass('user')" mb-5 @click="switchPage('/pages/user')">
       <span i-carbon:user />
-    </navigator>
+    </view>
   </view>
 </template>

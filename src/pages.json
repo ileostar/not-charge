@@ -10,7 +10,15 @@
       "layout": "home"
     },
     {
+      "path": "pages/myQRCode",
+      "type": "page"
+    },
+    {
       "path": "pages/report",
+      "type": "page"
+    },
+    {
+      "path": "pages/scanQRCode",
       "type": "page"
     },
     {

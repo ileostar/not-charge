@@ -1,3 +1,4 @@
+import type { UserPagesConfig } from '@uni-helper/vite-plugin-uni-pages'
 import { defineUniPages } from '@uni-helper/vite-plugin-uni-pages'
 
 export default defineUniPages({
@@ -17,5 +18,8 @@ export default defineUniPages({
   //   borderStyle: "@tabBorderStyle",
   //   color: "@tabFontColor",
   //   selectedColor: "@tabSelectedColor",
+  //   list: [
+
+  //   ]
   // },
-})
+}) as UserPagesConfig
