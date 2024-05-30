@@ -1,8 +1,8 @@
 <template>
-  <view relative h-[100vh] border-box bg="grey" text-center flex="~ col" justify-between>
-    <view pt-20 px-5>
-      <slot/>
+  <view bg="grey" flex="~ col" border-box relative h-[100vh] justify-between text-center>
+    <view overflow-scroll px-5 pt-20>
+      <slot />
     </view>
-    <Tabbar/>
+    <Tabbar />
   </view>
 </template>

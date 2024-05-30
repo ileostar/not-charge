@@ -6,7 +6,9 @@
 interface NavigateToOptions {
   url: "/pages/index" |
        "/pages/hi" |
+       "/pages/myQRCode" |
        "/pages/report" |
+       "/pages/scanQRCode" |
        "/pages/user";
 }
 interface RedirectToOptions extends NavigateToOptions {}
