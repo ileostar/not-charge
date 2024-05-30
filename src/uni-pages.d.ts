@@ -9,14 +9,14 @@ interface NavigateToOptions {
        "/pages/gpt" |
        "/pages/hi" |
        "/pages/myQRCode" |
+       "/pages/report" |
        "/pages/scanQRCode" |
-       "/pages/user" |
-       "/pages/visual";
+       "/pages/user";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 
 interface SwitchTabOptions {
-  
+
 }
 
 type ReLaunchOptions = NavigateToOptions | SwitchTabOptions;

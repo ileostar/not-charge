@@ -22,6 +22,10 @@
       "type": "page"
     },
     {
+      "path": "pages/report",
+      "type": "page"
+    },
+    {
       "path": "pages/scanQRCode",
       "type": "page"
     },
