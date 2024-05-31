@@ -3,7 +3,7 @@
     <!-- 上部分 -->
     <view class="top-section flex items-center justify-between bg-white">
       <view class="flex items-center">
-        <image class="user-avatar rounded-full" src="../static/vite.png" mode="aspectFill" />
+        <image class="user-avatar rounded-full" src="../static/user.jpg" mode="aspectFill" />
         <view class="ml-4">
           <text class="font-bold">
             阿木木
