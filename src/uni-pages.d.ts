@@ -9,9 +9,9 @@ interface NavigateToOptions {
        "/pages/gpt" |
        "/pages/hi" |
        "/pages/myQRCode" |
-       "/pages/report" |
        "/pages/scanQRCode" |
-       "/pages/user";
+       "/pages/user" |
+       "/pages/visual";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

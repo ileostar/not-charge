@@ -14,12 +14,18 @@ function switchPage(url: string) {
 </script>
 
 <template>
-  <view text="6.5" bg="white/10" border-box fixed bottom-0 z-99 h-23 w-full flex items-center justify-around rd-5>
+  <view text="6.5" bg="white/10" border-box fixed bottom-0 z-99 h-23 w-full flex items-center justify-around border-t-0.6 border-t-bluegray rd-5 border-t-solid>
     <view :class="getActionClass('index')" mb-5 @click="switchPage('/pages/index')">
       <span i-carbon:home />
     </view>
-    <view :class="getActionClass('report')" mb-5 @click="switchPage('/pages/report')">
-      <span i-carbon:ibm-secure-infrastructure-on-vpc-for-regulated-industries />
+    <view :class="getActionClass('visual')" mb-5 @click="switchPage('/pages/visual')">
+      <span i-carbon:intrusion-prevention />
+    </view>
+    <view class="add-button" :class="getActionClass('addData')" mb-5 text-8 @click="switchPage('/pages/addData') ">
+      <span i-carbon:add-filled />
+    </view>
+    <view :class="getActionClass('gpt')" mb-5 @click="switchPage('/pages/gpt')">
+      <span i-carbon:bot />
     </view>
     <view :class="getActionClass('user')" mb-5 @click="switchPage('/pages/user')">
       <span i-carbon:user />
