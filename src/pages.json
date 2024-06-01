@@ -5,6 +5,14 @@
       "type": "home"
     },
     {
+      "path": "pages/addData",
+      "type": "page"
+    },
+    {
+      "path": "pages/gpt",
+      "type": "page"
+    },
+    {
       "path": "pages/hi",
       "type": "page",
       "layout": "home"
@@ -14,15 +22,15 @@
       "type": "page"
     },
     {
-      "path": "pages/report",
-      "type": "page"
-    },
-    {
       "path": "pages/scanQRCode",
       "type": "page"
     },
     {
       "path": "pages/user",
+      "type": "page"
+    },
+    {
+      "path": "pages/visual",
       "type": "page"
     }
   ],
