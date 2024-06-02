@@ -2,7 +2,7 @@
   "name": "not-charge",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.1.2",
   "description": "a uniapp applet about account management",
   "scripts": {
     "start": "pnpm --filter backend start",
