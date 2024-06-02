@@ -5,16 +5,18 @@
 
 interface NavigateToOptions {
   url: "/pages/index" |
+       "/pages/addData" |
+       "/pages/gpt" |
        "/pages/hi" |
        "/pages/myQRCode" |
-       "/pages/report" |
        "/pages/scanQRCode" |
-       "/pages/user";
+       "/pages/user" |
+       "/pages/visual";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 
 interface SwitchTabOptions {
-  
+
 }
 
 type ReLaunchOptions = NavigateToOptions | SwitchTabOptions;

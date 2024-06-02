@@ -18,11 +18,24 @@ function switchPage(url: string) {
     <view :class="getActionClass('index')" mb-5 @click="switchPage('/pages/index')">
       <span i-carbon:home />
     </view>
-    <view :class="getActionClass('report')" mb-5 @click="switchPage('/pages/report')">
-      <span i-carbon:ibm-secure-infrastructure-on-vpc-for-regulated-industries />
+    <view :class="getActionClass('visual')" mb-5 @click="switchPage('/pages/visual')">
+      <span i-carbon:intrusion-prevention />
+    </view>
+    <view class="add-button" :class="getActionClass('addData')" mb-5 text-8 @click="switchPage('/pages/addData') ">
+      <span i-carbon:add-filled />
+    </view>
+    <view :class="getActionClass('gpt')" mb-5 @click="switchPage('/pages/gpt')">
+      <span i-carbon:bot />
     </view>
     <view :class="getActionClass('user')" mb-5 @click="switchPage('/pages/user')">
       <span i-carbon:user />
     </view>
   </view>
 </template>
+
+<style scoped>
+.add-button {
+  position: relative;
+  top: -43px; /* 向上移动一部分高度，使其突出 */
+}
+</style>

@@ -3,7 +3,7 @@
 
 <template>
   <div>
-    report
+    gpt
   </div>
 </template>
 
