@@ -101,6 +101,6 @@
     "pre-commit": "pnpm lint-staged"
   },
   "lint-staged": {
-    "*": "eslint --fix src test"
+    "src/*": "eslint --fix"
   }
 }
