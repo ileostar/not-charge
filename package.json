@@ -5,6 +5,8 @@
   "packageManager": "pnpm@9.0.6",
   "description": "a uniapp applet about account management",
   "scripts": {
+    "start": "pnpm --filter backend start",
+    "start:dev": "pnpm --filter backend start:dev",
     "dev": "uni",
     "dev:app": "uni -p app",
     "dev:app-android": "uni -p app-android",

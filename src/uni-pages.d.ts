@@ -7,7 +7,6 @@ interface NavigateToOptions {
   url: "/pages/index" |
        "/pages/addData" |
        "/pages/gpt" |
-       "/pages/hi" |
        "/pages/myQRCode" |
        "/pages/scanQRCode" |
        "/pages/user" |
@@ -16,7 +15,7 @@ interface NavigateToOptions {
 interface RedirectToOptions extends NavigateToOptions {}
 
 interface SwitchTabOptions {
-
+  
 }
 
 type ReLaunchOptions = NavigateToOptions | SwitchTabOptions;

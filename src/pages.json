@@ -13,11 +13,6 @@
       "type": "page"
     },
     {
-      "path": "pages/hi",
-      "type": "page",
-      "layout": "home"
-    },
-    {
       "path": "pages/myQRCode",
       "type": "page"
     },

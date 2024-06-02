@@ -151,7 +151,3 @@ const oneDaySum = computed(() => {
 
 <style>
 </style>
-
-<route type="home" lang="json">
-{}
-</route>
