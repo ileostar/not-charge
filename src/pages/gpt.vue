@@ -3,10 +3,6 @@
 
 <template>
   <div>
-    gpt
+    GPT
   </div>
 </template>
-
-<style scoped>
-
-</style>

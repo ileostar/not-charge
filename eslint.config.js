@@ -3,7 +3,6 @@ const unocss = require('@unocss/eslint-plugin')
 
 module.exports = uni(
   {
-    ignore: ['backend'],
   },
   unocss.configs.flat,
 )

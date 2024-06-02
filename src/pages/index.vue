@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// 月份
+/** 月份 */
 const months = reactive(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'])
 const selectMonths = ref('六月')
 // 预算的起始与结束
@@ -26,24 +26,33 @@ function changeMonths(event: any) {
   selectMonths.value = months[event.detail.value]
 }
 // 计算本月预算已用多少（进度条）
-const percent = computed({
-  get() {
-    return ((haveCost.value - budgetStart.value) / (budgetEnd.value - budgetStart.value)) * 100
-  },
-  // set()还没做！！
-  set() {
-    // xxxxxxxx
-  },
-})
+const percent = computed(() => ((haveCost.value - budgetStart.value) / (budgetEnd.value - budgetStart.value)) * 100)
+
 // 计算今日开销
-const oneDaySum = computed(() => {
-  return detailItems.reduce((sum, item) => sum + item.amount, 0).toFixed(2)
-})
+const oneDaySum = computed(() => detailItems.reduce((sum, item) => sum + item.amount, 0).toFixed(2))
+
+// Card info
+const cardInfo = ref([
+  {
+    title: '支出',
+    number: '-$2482.00',
+    description: '比上个月多5%',
+    color: 'bg-yellow-500',
+    icon: 'i-carbon:arrow-down-left',
+  },
+  {
+    title: '收入',
+    number: '+$8482.00',
+    description: '比上个月多15%',
+    color: 'bg-green-500',
+    icon: 'i-carbon:growth',
+  },
+])
 </script>
 
 <template>
-  <view class="h-full bg-gray-100 container">
-    <view class="header flex items-center justify-between bg-white py-4">
+  <view h-full w-full container>
+    <header flex items-center justify-between bg-white py-4 dark:bg-black>
       <picker
         mode="selector"
         :range="months"
@@ -75,38 +84,15 @@ const oneDaySum = computed(() => {
           />
         </view>
       </view>
+    </header>
+    <view gap="2.5" my-4 h-20 w-full flex items-center text-white>
+      <BaseCards v-for="i in cardInfo" :key="i.title" flex-1 :icon="i.icon" :number="i.number" :color="i.color" :description="i.description" :title="i.title" />
     </view>
-    <view class="in-out my-4 flex items-center justify-between px-2 text-white">
-      <view class="out shadow-3xl mr-3 w-50% rounded-lg bg-amber-300 py-2 pl-4 pr-2">
-        <view flex justify-between>
-          <text>支出</text>
-          <span i-carbon:arrow-down-left />
-        </view>
-        <view flex justify-between text-size-xl font-800>
-          -$2482.00
-        </view>
-        <view flex justify-between>
-          比上个月多5%
-        </view>
-      </view>
-      <view class="shadow-3xl in ml-3 w-50% rounded-lg bg-green-500 py-2 pl-4 pr-2">
-        <view flex justify-between>
-          <text>收入</text>
-          <span i-carbon:growth />
-        </view>
-        <view flex justify-between text-size-xl font-800>
-          +$8482.00
-        </view>
-        <view flex justify-between>
-          比上个月多15%
-        </view>
-      </view>
-    </view>
-    <view class="thisMonths-budget mx-2 rounded-lg bg-white">
-      <view flex justify-between border-b-0.6 border-b-coolgray border-b-solid py-2 pl-2>
+    <view rounded-lg bg="gray/30">
+      <view flex justify-between border-b-0.6 border-b-coolgray border-b-solid py-4 pl-4>
         本月预算
       </view>
-      <view class="flex items-center justify-between px-2 py-2">
+      <view flex-base py-2>
         <view font-600>
           ${{ budgetStart }}
         </view>
@@ -118,8 +104,8 @@ const oneDaySum = computed(() => {
         <progress :percent="percent" activeColor="#f8c43d" border-radius="25" />
       </view>
     </view>
-    <view class="detail mx-2 mb-2 rounded-lg bg-white px-2">
-      <view class="detail-top flex items-center justify-between py-2">
+    <view mb-2 rounded-lg bg="gray/30">
+      <view flex items-center justify-between py-4>
         <view class="date">
           6月11日（周二）
         </view>
@@ -127,7 +113,7 @@ const oneDaySum = computed(() => {
           {{ oneDaySum }}
         </view>
       </view>
-      <view v-for="item in detailItems" :key="item.id" class="detail-content flex items-center justify-between border-t-0.6 border-t-coolgray border-t-solid">
+      <view v-for="item in detailItems" :key="item.id" flex items-center justify-between border-t-0.6 border-t-coolgray border-t-solid>
         <view flex items-center justify-between py-2>
           <view h-10 w-10 rounded-full :class="themeColors[item.name]">
             <span :class="item.icon" h-10 text-size-2xl text-light />
@@ -146,8 +132,10 @@ const oneDaySum = computed(() => {
         </view>
       </view>
     </view>
+    <view h-2 />
   </view>
 </template>
 
-<style>
-</style>
+<route type="home" lang="json">
+  {}
+</route>

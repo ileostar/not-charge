@@ -1,6 +1,6 @@
 <template>
-  <view class="h-[100vh]" bg="grey" flex="~ col" border-box relative justify-between text-center>
-    <view overflow-scroll px-5 pt-20>
+  <view class="h-[100vh]" flex="~ col" border-box relative justify-between text-center>
+    <view overflow-scroll px-5 pt-20 class="bg-[#F4F5F7]">
       <slot />
     </view>
     <Tabbar />

@@ -1,7 +1,7 @@
 <template>
-  <view class="profile-container h-full w-full bg-gray-100">
+  <view class="profile-container h-full w-full">
     <!-- 上部分 -->
-    <view class="top-section flex items-center justify-between bg-white">
+    <view class="top-section flex items-center justify-between">
       <view class="flex items-center">
         <image class="user-avatar rounded-full" src="../static/user.jpg" mode="aspectFill" />
         <view class="ml-4">
@@ -19,7 +19,7 @@
     </view>
 
     <!-- 统计信息 -->
-    <view class="stats-section mt-2 flex justify-around bg-white py-4">
+    <view class="stats-section mt-2 flex justify-around py-4">
       <view class="text-center">
         <text class="block font-bold">
           10
@@ -47,7 +47,7 @@
     </view>
 
     <!-- 中间部分 -->
-    <view class="middle-section mt-2 bg-white">
+    <view class="middle-section mt-2">
       <navigator url="/pages/accountManagement" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
         <view class="flex items-center">
           <span class="icon iconify" i-icon-park:notebook-and-pen />
@@ -105,7 +105,7 @@
     </view>
 
     <!-- 下部分 -->
-    <view class="bottom-section mt-2 bg-white pb-23">
+    <view class="bottom-section mt-2 pb-23">
       <navigator url="/pages/gestureLock" class="block flex items-center justify-between border-b border-gray-200 border-b-style-solid py-3">
         <view class="flex items-center">
           <span class="icon iconify" i-icon-park:electronic-locks-close />

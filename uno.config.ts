@@ -8,6 +8,9 @@ import {
 import { presetUni } from '@uni-helper/unocss-preset-uni'
 
 export default defineConfig({
+  shortcuts: [
+    ['flex-base', 'flex justify-between items-center'],
+  ],
   presets: [
     presetUni(),
     presetIcons({

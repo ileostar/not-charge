@@ -1,9 +1,8 @@
 <template>
-  <view class="px-10 py-20 text-center">
-    <slot />
-    <app-footer />
-    <view class="mx-auto mt-5 text-center text-sm opacity-25">
-      [Home Layout]
+  <view class="h-[100vh]" bg="grey" flex="~ col" border-box relative justify-between text-center>
+    <view overflow-scroll px-5 pt-20>
+      <slot />
     </view>
+    <Tabbar />
   </view>
 </template>
