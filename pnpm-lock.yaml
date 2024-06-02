@@ -10,49 +10,52 @@ importers:
     dependencies:
       '@dcloudio/uni-app':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(@dcloudio/types@3.4.8)(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(@dcloudio/types@3.4.8)(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-app-plus':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(@vueuse/core@10.9.0)(postcss@8.4.38)(vite@5.2.11)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(@vueuse/core@10.9.0(vue@3.4.26(typescript@5.4.5)))(postcss@8.4.38)(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.8)(terser@5.31.0))(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-components':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-h5':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-alipay':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-baidu':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-jd':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-kuaishou':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-lark':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-qq':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-toutiao':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-weixin':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-mp-xhs':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@dcloudio/uni-quickapp-webview':
         specifier: 3.0.0-alpha-4000020240111001
-        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26)
+        version: 3.0.0-alpha-4000020240111001(postcss@8.4.38)(vue@3.4.26(typescript@5.4.5))
       '@vueuse/core':
         specifier: ^10.7.2
-        version: 10.9.0(vue@3.4.26)
+        version: 10.9.0(vue@3.4.26(typescript@5.4.5))
+      rollup-plugin-node-resolve:
+        specifier: ^5.2.0
+        version: 5.2.0(rollup@4.17.2)
       vue:
         specifier: ^3.3.8
         version: 3.4.26(typescript@5.4.5)
