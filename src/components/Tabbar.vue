@@ -14,7 +14,7 @@ function switchPage(url: string) {
 </script>
 
 <template>
-  <view text="6.5" bg="white/10" border-box fixed bottom-0 z-99 h-23 w-full flex items-center justify-around border-t-0.6 border-t-bluegray rd-5 border-t-solid>
+  <view text="6.5" bg="white/10" border-box fixed bottom-0 z-99 h-23 w-full flex items-center justify-around rd-5>
     <view :class="getActionClass('index')" mb-5 @click="switchPage('/pages/index')">
       <span i-carbon:home />
     </view>
@@ -37,6 +37,5 @@ function switchPage(url: string) {
 .add-button {
   position: relative;
   top: -43px; /* 向上移动一部分高度，使其突出 */
-
 }
 </style>
