@@ -1,12 +1,11 @@
 <script setup lang="ts">
+
 </script>
 
 <template>
-  <div>
-    report
-  </div>
+  <view>myQRCode</view>
 </template>
 
-<style scoped>
+<style>
 
 </style>
