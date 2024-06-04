@@ -11,24 +11,27 @@ const items = reactive([
   { name: '医疗', icon: 'i-carbon:hospital', color: 'text-cyan' },
   { name: '其他', icon: 'i-carbon:tag-export', color: 'text-rose' },
 ])
+const keys = ref(['1', '2', '3', 'TODAY', '4', '5', '6', '+', '7', '8', '9', '-', '.', '0', '<-', 'DONE'])
 // 选中有背景色
-const selectedItem = reactive({ name: '', icon: '' })
-function currentItem(item: { name: string, icon: string }) {
+const selectedItem = reactive({ name: '', icon: '', color: '' })
+function currentItem(item: { name: string, icon: string, color: string }) {
   selectedItem.name = item.name
   selectedItem.icon = item.icon
+  selectedItem.color = item.color
 }
 </script>
 
 <template>
-  <view class="h-full w-full bg-gray-100">
+  <view h-full min-h-screen flex flex-col bg-gray-100>
     <!-- 顶部导航栏 -->
-    <view flex items-center justify-between border-b-0.6 border-b-coolgray border-b-solid bg-white py-2 shadow-sm>
-      <text class="mb-2 text-xl font-600">
-        记一笔
-      </text>
+    <view flex items-center justify-between border-b-0.6 border-b-coolgray border-b-solid py-2 shadow-sm>
+      <view v-show="selectedItem.name" flex flex-col items-center justify-between>
+        <span :class="[selectedItem.icon, selectedItem.color]" />
+        <input type="text" placeholder="备注">
+      </view>
     </view>
     <!-- 选择区域 -->
-    <view mt- mx-3 flex-col items-center justify-start bg-white>
+    <view mt- mx-3 flex-col items-center justify-start>
       <view my-5 flex justify-between gap-14 rounded-full p-4>
         <button h-7 w-25 flex items-center justify-center rounded-full bg-yellow-500 py-1 text-white>
           支出
@@ -38,19 +41,28 @@ function currentItem(item: { name: string, icon: string }) {
         </button>
       </view>
       <view class="iconSelect flex flex-wrap items-center justify-evenly">
-        <view v-for="(i, index) in items" :key="index" class="icon-Items my-4 flex flex-col items-center justify-center" :class="{ 'bg-amber': selectedItem.name === i.name }" @click="currentItem(i)">
+        <view v-for="(i, index) in items" :key="index" class="icon-Items my-4 flex flex-col items-center justify-center py-2" :class="{ 'bg-amber': selectedItem.name === i.name }" @click="currentItem(i)">
           <span :class="[i.icon, i.color]" text-6 />
-          <text text-3>
+          <text text-3 text-black>
             {{ i.name }}
           </text>
         </view>
+      </view>
+    </view>
+    <!-- 键盘 -->
+    <view>
+      <input type="text" placeholder="按住说话">
+      <view flex flex-wrap items-center>
+        <button v-for="key in keys" :key="key" h="25%" w="25%" flex flex-col items-center justify-center border-style-solid p-4 text-lg>
+          {{ key }}
+        </button>
       </view>
     </view>
   </view>
 </template>
 
 <style scoped>
-.iconSelect{
+.iconSelect .Keyboard{
   align-content:space-evenly;
 }
 .icon-Items{
