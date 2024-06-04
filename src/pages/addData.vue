@@ -22,18 +22,18 @@ function currentItem(item: { name: string, icon: string }) {
 <template>
   <view class="h-full w-full bg-gray-100">
     <!-- 顶部导航栏 -->
-    <view class="nav-bar flex items-center justify-between border-b-0.6 border-b-coolgray border-b-solid bg-white py-2 shadow-sm">
+    <view flex items-center justify-between border-b-0.6 border-b-coolgray border-b-solid bg-white py-2 shadow-sm>
       <text class="mb-2 text-xl font-600">
         记一笔
       </text>
     </view>
     <!-- 选择区域 -->
     <view mt- mx-3 flex-col items-center justify-start bg-white>
-      <view class="toggle my-5 flex justify-between gap-14 rounded-full p-4">
-        <button class="h-7 w-25 flex items-center justify-center rounded-full bg-yellow-500 py-1 text-white">
+      <view my-5 flex justify-between gap-14 rounded-full p-4>
+        <button h-7 w-25 flex items-center justify-center rounded-full bg-yellow-500 py-1 text-white>
           支出
         </button>
-        <button class="h-7 w-25 flex items-center justify-center rounded-full bg-yellow-500 py-1 text-white">
+        <button h-7 w-25 flex items-center justify-center rounded-full bg-yellow-500 py-1 text-white>
           收入
         </button>
       </view>

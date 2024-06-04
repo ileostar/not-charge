@@ -16,5 +16,6 @@ declare module '@vue/runtime-core' {
     HiCounter: typeof import('./components/HiCounter.vue')['default']
     InputEntry: typeof import('./components/InputEntry.vue')['default']
     Tabbar: typeof import('./components/Tabbar.vue')['default']
+    UserSelect: typeof import('./components/UserSelect.vue')['default']
   }
 }
