@@ -2,7 +2,5 @@
 </script>
 
 <template>
-  <div>
-    GPT
-  </div>
+  <Keyboard />
 </template>

@@ -11,7 +11,7 @@ const items = reactive([
   { name: '医疗', icon: 'i-carbon:hospital', color: 'text-cyan' },
   { name: '其他', icon: 'i-carbon:tag-export', color: 'text-rose' },
 ])
-const keys = ref(['1', '2', '3', 'TODAY', '4', '5', '6', '+', '7', '8', '9', '-', '.', '0', '<-', 'DONE'])
+// const keys = ref(['1', '2', '3', 'TODAY', '4', '5', '6', '+', '7', '8', '9', '-', '.', '0', '<-', 'DONE'])
 // 选中有背景色
 const selectedItem = reactive({ name: '', icon: '', color: '' })
 function currentItem(item: { name: string, icon: string, color: string }) {
@@ -24,10 +24,13 @@ function currentItem(item: { name: string, icon: string, color: string }) {
 <template>
   <view h-full min-h-screen flex flex-col bg-gray-100>
     <!-- 顶部导航栏 -->
-    <view flex items-center justify-between border-b-0.6 border-b-coolgray border-b-solid py-2 shadow-sm>
-      <view v-show="selectedItem.name" flex flex-col items-center justify-between>
-        <span :class="[selectedItem.icon, selectedItem.color]" />
-        <input type="text" placeholder="备注">
+    <view flex items-center justify-between border-b-0.6 border-b-coolgray border-b-solid py-2 shadow-sm bg="black/30">
+      <view v-show="selectedItem.name" flex flex-col justify-between pl-3>
+        <span :class="[selectedItem.icon, selectedItem.color]" text-size-xl />
+        <input type="text" placeholder="备注" :maxlength="15" w-55 bg-black text-left>
+      </view>
+      <view>
+        123
       </view>
     </view>
     <!-- 选择区域 -->
@@ -50,14 +53,7 @@ function currentItem(item: { name: string, icon: string, color: string }) {
       </view>
     </view>
     <!-- 键盘 -->
-    <view>
-      <input type="text" placeholder="按住说话">
-      <view flex flex-wrap items-center>
-        <button v-for="key in keys" :key="key" h="25%" w="25%" flex flex-col items-center justify-center border-style-solid p-4 text-lg>
-          {{ key }}
-        </button>
-      </view>
-    </view>
+    <keyboard />
   </view>
 </template>
 
