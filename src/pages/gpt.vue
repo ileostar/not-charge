@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div>
-    GPT
-  </div>
+  <view>
+    gpt
+  </view>
 </template>

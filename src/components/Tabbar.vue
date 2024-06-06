@@ -21,7 +21,7 @@ function switchPage(url: string) {
     <view :class="getActionClass('visual')" mb-5 @click="switchPage('/pages/visual')">
       <span i-carbon:intrusion-prevention />
     </view>
-    <view class="add-button" :class="getActionClass('addData')" mb-5 text-8 @click="switchPage('/pages/addData') ">
+    <view class="add-button" :class="getActionClass('addData')" mb-5 text-8 @click="switchPage('/pages/addData')">
       <span i-carbon:add-filled />
     </view>
     <view :class="getActionClass('gpt')" mb-5 @click="switchPage('/pages/gpt')">

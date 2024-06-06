@@ -2,7 +2,7 @@
 /** 月份 */
 const months = reactive(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'])
 const selectMonths = ref('六月')
-// 预算的起始与结束
+/** 预算的起始与结束 */
 const budgetStart = ref(2000)
 const budgetEnd = ref(5000)
 const haveCost = ref(2900)
@@ -52,14 +52,14 @@ const cardInfo = ref([
 
 <template>
   <view h-full w-full container>
-    <header flex items-center justify-between bg-white py-4 dark:bg-black>
+    <header flex items-center justify-between py-4 dark:bg-black>
       <picker
         mode="selector"
         :range="months"
         @change="changeMonths"
       >
         <view class="flex items-center">
-          <text text-lg font-bold>
+          <text text-lg text-black font-bold>
             {{ selectMonths }}
           </text>
           <view h-8 w-8 flex items-center justify-center rounded-full>
@@ -92,7 +92,7 @@ const cardInfo = ref([
       <view flex justify-between border-b-0.6 border-b-coolgray border-b-solid py-4 pl-4>
         本月预算
       </view>
-      <view flex-base py-2>
+      <view flex-base px-2 py-2>
         <view font-600>
           ${{ budgetStart }}
         </view>
@@ -100,7 +100,7 @@ const cardInfo = ref([
           ${{ budgetEnd }}
         </view>
       </view>
-      <view mb-3 py-1 pl-2>
+      <view mb-3 px-2 py-1>
         <progress :percent="percent" activeColor="#f8c43d" border-radius="25" />
       </view>
     </view>
