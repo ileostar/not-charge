@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     AppLogos: typeof import('./components/AppLogos.vue')['default']
     BaseCards: typeof import('./components/BaseCards.vue')['default']
     Demo: typeof import('./components/Demo.vue')['default']
+    GridComponent: typeof import('./components/GridComponent.vue')['default']
     HiCounter: typeof import('./components/HiCounter.vue')['default']
     InputEntry: typeof import('./components/InputEntry.vue')['default']
     Keyboard: typeof import('./components/keyboard.vue')['default']

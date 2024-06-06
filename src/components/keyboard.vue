@@ -1,9 +1,9 @@
 <script setup lang="ts">
+const emit = defineEmits(['result'])
 const input = ref('')
 let OperatorStart = false
 const Savebutton = ref('保存')
 const displayinput: Ref<string> = ref('')
-
 function NumberCk(key: string) {
   if (key === '.') {
     // 获取最后一个操作数
@@ -19,6 +19,7 @@ function NumberCk(key: string) {
 
   input.value += key
   displayinput.value += key
+  emit('result', displayinput)
   OperatorStart = false // Reset operator start flag on number input
 }
 
@@ -33,6 +34,7 @@ function Operator(operator: string) {
     displayinput.value = Calculation(displayinput.value)
     // 添加新的操作符
     displayinput.value += operator
+    emit('result', displayinput)
   }
   else {
     // 计算当前表达式的值
@@ -43,6 +45,7 @@ function Operator(operator: string) {
     OperatorStart = true
     // 更新按钮的文本为 '='，表示可以进行求和操作
     Savebutton.value = '='
+    emit('result', displayinput)
   }
 }
 
@@ -56,10 +59,12 @@ function sum() {
     }
     input.value = ''
     Savebutton.value = '保存'
+    emit('result', displayinput)
     OperatorStart = false
   }
   else {
     displayinput.value = ''
+    emit('result', displayinput)
   }
 }
 
@@ -78,9 +83,15 @@ function Calculation(money: string): string {
   }
 }
 function deleteText() {
-  if (displayinput.value.length > 1)
+  if (displayinput.value.length > 1) {
     displayinput.value = displayinput.value.slice(0, -1)
-  else displayinput.value = '0'
+    emit('result', displayinput)
+  }
+
+  else {
+    displayinput.value = '0'
+    emit('result', displayinput)
+  }
 }
 </script>
 
