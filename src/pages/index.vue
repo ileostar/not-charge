@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { loadRecords,records } from '@/API/loadRecords'
 /** 月份 */
 const months = reactive(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'])
 const selectMonths = ref('六月')
@@ -7,13 +8,34 @@ const budgetStart = ref(2000)
 const budgetEnd = ref(5000)
 const haveCost = ref(2900)
 // 流水账的内容
-const detailItems = reactive([
-  { id: 1, name: '房租', remark: '六月份房租', amount: -1200.00, icon: 'i-carbon:home' },
-  { id: 2, name: '学习教育', remark: '网上买了2本书', amount: -500.00, icon: 'i-carbon:book' },
-  { id: 3, name: '购物', remark: '买了一块表', amount: -800.00, icon: 'i-carbon:shopping-cart-arrow-up' },
-  { id: 4, name: '餐饮', remark: '吃了一碗面', amount: -15.00, icon: 'i-carbon:restaurant' },
-  { id: 5, name: '其他', remark: '转账', amount: +15.00, icon: 'i-carbon:tag-export' },
-])
+interface DetailItem {
+  id: string
+  name: string
+  remark: string
+  amount: number
+  icon: string
+}
+const detailItems = reactive<DetailItem[]>([])
+//加载的时候获得数据
+onMounted(async () => {
+  try {
+    await loadRecords()
+    console.log('记录数据:', JSON.parse(JSON.stringify(records.value)))
+    console.log('记录数据2:',records.value)
+
+  } catch (error) {
+    console.error('加载记录失败', error)
+  }
+})
+
+
+//const detailItems = reactive([
+  // { id: 1, name: '房租', remark: '六月份房租', amount: -1200.00, icon: 'i-carbon:home' },
+  // { id: 2, name: '学习教育', remark: '网上买了2本书', amount: -500.00, icon: 'i-carbon:book' },
+  // { id: 3, name: '购物', remark: '买了一块表', amount: -800.00, icon: 'i-carbon:shopping-cart-arrow-up' },
+  // { id: 4, name: '餐饮', remark: '吃了一碗面', amount: -15.00, icon: 'i-carbon:restaurant' },
+  // { id: 5, name: '其他', remark: '转账', amount: +15.00, icon: 'i-carbon:tag-export' },
+//])
 // 主题颜色映射
 const themeColors: Record<string, string> = {
   房租: 'bg-blue-500',

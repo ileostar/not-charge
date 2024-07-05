@@ -88,8 +88,13 @@ function loadRecords(){
 }
 
 //点击保存收起键盘
-const visitkb=ref(true)
-
+const visitkb=ref(false)
+function closeKeyboard(){
+  visitkb.value=false
+}
+function showKeyboard(){
+  visitkb.value=true
+}
 </script>
 
 <template>
@@ -122,10 +127,10 @@ const visitkb=ref(true)
           收入
         </button>
       </view>
-      <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" />
+      <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" @changesVisit="showKeyboard"/>
     </view>
     <!-- 键盘 -->
-    <keyboard v-if="selectedItem.name" @result="getResult" @save="addRecord"/>
+    <keyboard v-if="visitkb" @result="getResult" @save="addRecord" @changecVisit="closeKeyboard"/>
   </view>
 </template>
 

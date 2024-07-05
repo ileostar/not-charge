@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const emit = defineEmits(['result','save'])
+const emit = defineEmits(['result','save','changecVisit'])
 const input = ref('')
 let OperatorStart = false
 const Savebutton = ref('保存')
@@ -66,6 +66,7 @@ function sum() {
     emit('save', displayinput)
     displayinput.value = ''
     emit('result', displayinput)
+    emit('changecVisit',false)
   }
 }
 
