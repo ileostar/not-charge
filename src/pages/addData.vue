@@ -20,8 +20,14 @@ const incomeItems = reactive([
   { name: '其他', icon: 'i-carbon:currency-dollar', color: 'text-orange' },
 
 ])
+//传值到首页
+const name=ref('')
+const icon=ref('')
+const color=ref('')
+const note=ref('')
+const amount=ref('')
+let records: any[] = reactive([]);
 
-// const keys = ref(['1', '2', '3', 'TODAY', '4', '5', '6', '+', '7', '8', '9', '-', '.', '0', '<-', 'DONE'])
 // 选中有背景色
 const selectedItem = reactive({ name: '', icon: '', color: '' })
 const result = ref()
@@ -31,11 +37,59 @@ function currentItem(item: { name: string, icon: string, color: string }) {
   selectedItem.name = item.name
   selectedItem.icon = item.icon
   selectedItem.color = item.color
+  name.value=item.name
+  icon.value=item.icon
+  color.value=item.color
+
 }
 function getResult(value: any) {
   result.value = value
+  amount.value=value
 }
 const currentItems = computed(() => currentType.value === 'expense' ? expenseItems : incomeItems)
+
+
+// 添加记录
+function addRecord() {
+  const newRecord = {
+    name,
+    icon,
+    color,
+    amount: amount.value,
+    note: note.value,
+    date: new Date().toLocaleDateString() // 添加日期字段，可以根据实际需求格式化
+  };
+  uni.request({
+    url: 'http://localhost:3000/api/data',
+    method: 'POST',
+    data: newRecord,
+    success: (res) => {
+      console.log('添加记录成功', res.data);
+      loadRecords(); // 添加成功后重新加载记录
+    },
+    fail: (err) => {
+      console.error('添加记录失败', err);
+    }
+  });
+}
+
+function loadRecords(){
+  uni.request({
+    url: 'http://localhost:3000/api/data',
+    method: 'GET',
+    sslVerify: true,
+    success: (res) => {
+      console.log('获取记录成功', res.data);
+      records = res.data as any[]; // 显式类型断言
+    },
+    fail: (error) => {console.log(error.errMsg);
+    }
+  })
+}
+
+//点击保存收起键盘
+const visitkb=ref(true)
+
 </script>
 
 <template>
@@ -44,7 +98,7 @@ const currentItems = computed(() => currentType.value === 'expense' ? expenseIte
     <view v-if="selectedItem.name" flex items-center justify-between py-2 shadow-sm bg="black/20">
       <view flex flex-col justify-between pl-3>
         <span :class="[selectedItem.icon, selectedItem.color]" text-size-xl />
-        <input type="text" placeholder="备注" :maxlength="15" w-55 text-left>
+        <input type="text" placeholder="备注" :maxlength="15" w-55 text-left v-model="note">
       </view>
       <view text-xl>
         {{ result ? result : "请输入金额" }}
@@ -71,7 +125,7 @@ const currentItems = computed(() => currentType.value === 'expense' ? expenseIte
       <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" />
     </view>
     <!-- 键盘 -->
-    <keyboard v-if="selectedItem.name" @result="getResult" />
+    <keyboard v-if="selectedItem.name" @result="getResult" @save="addRecord"/>
   </view>
 </template>
 
