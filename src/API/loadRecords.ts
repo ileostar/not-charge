@@ -7,13 +7,23 @@ export function loadRecords() {
     uni.request({
       url: 'http://localhost:3000/api/data',
       method: 'GET',
+      sslVerify: true,
       success: (res) => {
         if (res.statusCode === 200) {
-          // 确保返回的数据是一个数组
           const data = Array.isArray(res.data) ? res.data : []
-          records.value = data
+          // 解包数据中的 _value 对象
+          records.value = data.map(record => {
+            return {
+              name: record.name._value,
+              icon: record.icon._value,
+              color: record.color._value,
+              amount: record.amount._value,
+              note: record.note,
+              date:record.date
+            }
+          })
           console.log('获取记录成功', records.value)
-          resolve(data)
+          resolve(records.value)
         } else {
           console.error('获取记录失败', res)
           reject(res)

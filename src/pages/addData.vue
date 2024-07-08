@@ -65,7 +65,7 @@ function addRecord() {
     data: newRecord,
     success: (res) => {
       console.log('添加记录成功', res.data);
-      loadRecords(); // 添加成功后重新加载记录
+     // loadRecords(); // 添加成功后重新加载记录
     },
     fail: (err) => {
       console.error('添加记录失败', err);
@@ -73,19 +73,19 @@ function addRecord() {
   });
 }
 
-function loadRecords(){
-  uni.request({
-    url: 'http://localhost:3000/api/data',
-    method: 'GET',
-    sslVerify: true,
-    success: (res) => {
-      console.log('获取记录成功', res.data);
-      records = res.data as any[]; // 显式类型断言
-    },
-    fail: (error) => {console.log(error.errMsg);
-    }
-  })
-}
+// function loadRecords(){
+//   uni.request({
+//     url: 'http://localhost:3000/api/data',
+//     method: 'GET',
+//     sslVerify: true,
+//     success: (res) => {
+//       console.log('获取记录成功123321', res.data);
+//       records = res.data as any[]; // 显式类型断言
+//     },
+//     fail: (error) => {console.log(error.errMsg);
+//     }
+//   })
+// }
 
 //点击保存收起键盘
 const visitkb=ref(false)
@@ -130,7 +130,7 @@ function showKeyboard(){
       <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" @changesVisit="showKeyboard"/>
     </view>
     <!-- 键盘 -->
-    <keyboard v-if="visitkb" @result="getResult" @save="addRecord" @changecVisit="closeKeyboard"/>
+    <keyboard v-if="visitkb" @result="getResult" @save="addRecord" @changecVisit="closeKeyboard" :currentType="currentType"/>
   </view>
 </template>
 

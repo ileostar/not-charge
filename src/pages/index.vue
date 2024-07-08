@@ -9,25 +9,43 @@ const budgetEnd = ref(5000)
 const haveCost = ref(2900)
 // 流水账的内容
 interface DetailItem {
-  id: string
   name: string
   remark: string
   amount: number
   icon: string
+  date:string
 }
 const detailItems = reactive<DetailItem[]>([])
+  const groupedItems = reactive<Record<string, DetailItem[]>>({});
 //加载的时候获得数据
 onMounted(async () => {
   try {
     await loadRecords()
-    console.log('记录数据:', JSON.parse(JSON.stringify(records.value)))
-    console.log('记录数据2:',records.value)
+    console.log('记录数据1:', records.value)
+    // 将获取到的数据赋值给 detailItems
+    detailItems.push(...records.value.map((record: any) => ({
+      name: record.name,
+      remark: record.note,
+      amount: parseFloat(record.amount),
+      icon: record.icon,
+      date:record.date
+    })))
 
+     // 按日期分组数据
+     detailItems.forEach(item => {
+      if (!groupedItems[item.date]) {
+        groupedItems[item.date] = [];
+      }
+      groupedItems[item.date].push(item);
+    });
+
+
+    console.log('记录数据2:', records.value)
   } catch (error) {
     console.error('加载记录失败', error)
   }
 })
-
+// const detailItems = reactive([{id:'',name:'',remark:'',amount:'',icon:''}])
 
 //const detailItems = reactive([
   // { id: 1, name: '房租', remark: '六月份房租', amount: -1200.00, icon: 'i-carbon:home' },
@@ -38,11 +56,19 @@ onMounted(async () => {
 //])
 // 主题颜色映射
 const themeColors: Record<string, string> = {
-  房租: 'bg-blue-500',
-  学习教育: 'bg-purple-500',
-  购物: 'bg-red-500',
-  餐饮: 'bg-green-500',
-  其他: 'bg-yellow-500',
+  房租: 'bg-blue',
+  学习: 'bg-purple-500',
+  购物: 'bg-red',
+  美食: 'bg-orange',
+  健身运动:'bg-green',
+  交通:'bg-pink',
+  通讯:'bg-fuchsia',
+  其他: 'bg-rose',
+  医疗:'bg-cyan',
+  理财:'bg-blue',
+  工资:'bg-purple',
+  零花钱:'bg-cyan',
+  兼职:'bg-orange',
 }
 function changeMonths(event: any) {
   selectMonths.value = months[event.detail.value]
@@ -51,7 +77,9 @@ function changeMonths(event: any) {
 const percent = computed(() => ((haveCost.value - budgetStart.value) / (budgetEnd.value - budgetStart.value)) * 100)
 
 // 计算今日开销
-const oneDaySum = computed(() => detailItems.reduce((sum, item) => sum + item.amount, 0).toFixed(2))
+function calculateOneDaySum(items: DetailItem[]) {
+  return items.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
+}
 
 // Card info
 const cardInfo = ref([
@@ -126,32 +154,22 @@ const cardInfo = ref([
         <progress :percent="percent" activeColor="#f8c43d" border-radius="25" />
       </view>
     </view>
-    <view mb-2 rounded-lg bg="gray/30">
+    <view v-for="(items, date) in groupedItems" :key="date" mb-2 bg="gray/30" rounded-lg>
       <view flex items-center justify-between py-4>
-        <view class="date">
-          6月11日（周二）
-        </view>
-        <view class="sum" text-size-4>
-          {{ oneDaySum }}
-        </view>
+        <view class="date">{{ date }}</view>
+        <view class="sum" text-size-4>{{ calculateOneDaySum(items) }}</view>
       </view>
-      <view v-for="item in detailItems" :key="item.id" flex items-center justify-between border-t-0.6 border-t-coolgray border-t-solid>
+      <view v-for="(item,index) in items" :key="index" flex items-center justify-between border-t-0.6 border-t-coolgray border-t-solid>
         <view flex items-center justify-between py-2>
           <view h-10 w-10 rounded-full :class="themeColors[item.name]">
             <span :class="item.icon" h-10 text-size-2xl text-light />
           </view>
           <view class="topic flex flex-col justify-center pl-2.5">
-            <text mb-1 flex font-600>
-              {{ item.name }}
-            </text>
-            <text text-size-xs text-bluegray font-300>
-              {{ item.remark }}
-            </text>
+            <text mb-1 flex font-600>{{ item.name }}</text>
+            <text text-size-xs text-bluegray font-300>{{ item.remark }}</text>
           </view>
         </view>
-        <view text-size-4>
-          {{ item.amount > 0 ? `+${item.amount.toFixed(2)}` : item.amount.toFixed(2) }}
-        </view>
+        <view text-size-4>{{ item.amount > 0 ? `+${item.amount.toFixed(2)}` : item.amount.toFixed(2) }}</view>
       </view>
     </view>
     <view h-2 />
