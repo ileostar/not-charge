@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const theType=defineProps(['currentType'])
-const emit = defineEmits(['result','save','changecVisit'])
+const theType = defineProps(['currentType'])
+const emit = defineEmits(['result', 'save', 'changecVisit'])
 const input = ref('')
 let OperatorStart = false
 const Savebutton = ref('保存')
@@ -64,27 +64,28 @@ function sum() {
     OperatorStart = false
   }
   else {
-    //将收入/支出按钮的金额自动转换乘正负数
-    if(theType.currentType==='income'){
-        displayinput.value = Calculation(displayinput.value)
-      }else{
-        // 使用 Calculation 函数，并取负
-        let result = Calculation(displayinput.value);
-        let numericResult = Number.parseFloat(result);
-        if (!isNaN(numericResult)) { // 确保可以转换为数字
-          displayinput.value = (-numericResult).toString();
-        } else {
-          // 处理无法转换为数字的情况
-          displayinput.value = '0'; // 或者其他适当的默认值
-          console.error('Invalid input:', result);
-        }
+    // 将收入/支出按钮的金额自动转换乘正负数
+    if (theType.currentType === 'income') {
+      displayinput.value = Calculation(displayinput.value)
+    }
+    else {
+      // 使用 Calculation 函数，并取负
+      const result = Calculation(displayinput.value)
+      const numericResult = Number.parseFloat(result)
+      if (!Number.isNaN(numericResult)) { // 确保可以转换为数字
+        displayinput.value = (-numericResult).toString()
       }
-
+      else {
+        // 处理无法转换为数字的情况
+        displayinput.value = '0' // 或者其他适当的默认值
+        console.error('Invalid input:', result)
+      }
+    }
 
     emit('save', displayinput)
     displayinput.value = ''
     emit('result', displayinput)
-    emit('changecVisit',false)
+    emit('changecVisit', false)
   }
 }
 

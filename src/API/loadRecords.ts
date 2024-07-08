@@ -12,27 +12,28 @@ export function loadRecords() {
         if (res.statusCode === 200) {
           const data = Array.isArray(res.data) ? res.data : []
           // 解包数据中的 _value 对象
-          records.value = data.map(record => {
+          records.value = data.map((record) => {
             return {
               name: record.name._value,
               icon: record.icon._value,
               color: record.color._value,
               amount: record.amount._value,
               note: record.note,
-              date:record.date
+              date: record.date,
             }
           })
-          console.log('获取记录成功', records.value)
+          // console.log('获取记录成功', records.value)
           resolve(records.value)
-        } else {
-          console.error('获取记录失败', res)
+        }
+        else {
+          // console.error('获取记录失败', res)
           reject(res)
         }
       },
       fail: (error) => {
-        console.error('获取记录失败', error)
+        // console.error('获取记录失败', error)
         reject(error)
-      }
+      },
     })
   })
 }

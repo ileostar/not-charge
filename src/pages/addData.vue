@@ -20,13 +20,13 @@ const incomeItems = reactive([
   { name: '其他', icon: 'i-carbon:currency-dollar', color: 'text-orange' },
 
 ])
-//传值到首页
-const name=ref('')
-const icon=ref('')
-const color=ref('')
-const note=ref('')
-const amount=ref('')
-let records: any[] = reactive([]);
+// 传值到首页
+const name = ref('')
+const icon = ref('')
+const color = ref('')
+const note = ref('')
+const amount = ref('')
+// const records: any[] = reactive([])
 
 // 选中有背景色
 const selectedItem = reactive({ name: '', icon: '', color: '' })
@@ -37,17 +37,15 @@ function currentItem(item: { name: string, icon: string, color: string }) {
   selectedItem.name = item.name
   selectedItem.icon = item.icon
   selectedItem.color = item.color
-  name.value=item.name
-  icon.value=item.icon
-  color.value=item.color
-
+  name.value = item.name
+  icon.value = item.icon
+  color.value = item.color
 }
 function getResult(value: any) {
   result.value = value
-  amount.value=value
+  amount.value = value
 }
 const currentItems = computed(() => currentType.value === 'expense' ? expenseItems : incomeItems)
-
 
 // 添加记录
 function addRecord() {
@@ -57,20 +55,20 @@ function addRecord() {
     color,
     amount: amount.value,
     note: note.value,
-    date: new Date().toLocaleDateString() // 添加日期字段，可以根据实际需求格式化
-  };
+    date: new Date().toLocaleDateString(), // 添加日期字段，可以根据实际需求格式化
+  }
   uni.request({
     url: 'http://localhost:3000/api/data',
     method: 'POST',
     data: newRecord,
-    success: (res) => {
-      console.log('添加记录成功', res.data);
-     // loadRecords(); // 添加成功后重新加载记录
+    success: () => {
+      // console.log('添加记录成功', res.data)
+      // loadRecords(); // 添加成功后重新加载记录
     },
     fail: (err) => {
-      console.error('添加记录失败', err);
-    }
-  });
+      console.error('添加记录失败', err)
+    },
+  })
 }
 
 // function loadRecords(){
@@ -87,13 +85,13 @@ function addRecord() {
 //   })
 // }
 
-//点击保存收起键盘
-const visitkb=ref(false)
-function closeKeyboard(){
-  visitkb.value=false
+// 点击保存收起键盘
+const visitkb = ref(false)
+function closeKeyboard() {
+  visitkb.value = false
 }
-function showKeyboard(){
-  visitkb.value=true
+function showKeyboard() {
+  visitkb.value = true
 }
 </script>
 
@@ -103,7 +101,7 @@ function showKeyboard(){
     <view v-if="selectedItem.name" flex items-center justify-between py-2 shadow-sm bg="black/20">
       <view flex flex-col justify-between pl-3>
         <span :class="[selectedItem.icon, selectedItem.color]" text-size-xl />
-        <input type="text" placeholder="备注" :maxlength="15" w-55 text-left v-model="note">
+        <input v-model="note" type="text" placeholder="备注" :maxlength="15" w-55 text-left>
       </view>
       <view text-xl>
         {{ result ? result : "请输入金额" }}
@@ -127,10 +125,10 @@ function showKeyboard(){
           收入
         </button>
       </view>
-      <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" @changesVisit="showKeyboard"/>
+      <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" @changes-visit="showKeyboard" />
     </view>
     <!-- 键盘 -->
-    <keyboard v-if="visitkb" @result="getResult" @save="addRecord" @changecVisit="closeKeyboard" :currentType="currentType"/>
+    <keyboard v-if="visitkb" :current-type="currentType" @result="getResult" @save="addRecord" @changec-visit="closeKeyboard" />
   </view>
 </template>
 

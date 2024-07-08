@@ -2,7 +2,7 @@
 const props = defineProps(['items', 'currentItem', 'selectedItem'])
 const emit = defineEmits(['changesVisit'])
 
-function handleItemClick(item:any){
+function handleItemClick(item: any) {
   props.currentItem(item)
   emit('changesVisit', true) // 通知父组件显示键盘
 }
