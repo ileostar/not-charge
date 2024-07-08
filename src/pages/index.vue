@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { loadRecords, records } from '@/API/loadRecords'
 /** 月份 */
 const months = reactive(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'])
 const selectMonths = ref('六月')
@@ -7,20 +8,65 @@ const budgetStart = ref(2000)
 const budgetEnd = ref(5000)
 const haveCost = ref(2900)
 // 流水账的内容
-const detailItems = reactive([
-  { id: 1, name: '房租', remark: '六月份房租', amount: -1200.00, icon: 'i-carbon:home' },
-  { id: 2, name: '学习教育', remark: '网上买了2本书', amount: -500.00, icon: 'i-carbon:book' },
-  { id: 3, name: '购物', remark: '买了一块表', amount: -800.00, icon: 'i-carbon:shopping-cart-arrow-up' },
-  { id: 4, name: '餐饮', remark: '吃了一碗面', amount: -15.00, icon: 'i-carbon:restaurant' },
-  { id: 5, name: '其他', remark: '转账', amount: +15.00, icon: 'i-carbon:tag-export' },
-])
+interface DetailItem {
+  name: string
+  remark: string
+  amount: number
+  icon: string
+  date: string
+}
+const detailItems = reactive<DetailItem[]>([])
+const groupedItems = reactive<Record<string, DetailItem[]>>({})
+// 加载的时候获得数据
+onMounted(async () => {
+  try {
+    await loadRecords()
+
+    // 将获取到的数据赋值给 detailItems
+    detailItems.push(...records.value.map((record: any) => ({
+      name: record.name,
+      remark: record.note,
+      amount: Number.parseFloat(record.amount),
+      icon: record.icon,
+      date: record.date,
+    })))
+
+    // 按日期分组数据
+    detailItems.forEach((item) => {
+      if (!groupedItems[item.date])
+        groupedItems[item.date] = []
+
+      groupedItems[item.date].push(item)
+    })
+  }
+  catch (error) {
+    console.error('加载记录失败', error)
+  }
+})
+// const detailItems = reactive([{id:'',name:'',remark:'',amount:'',icon:''}])
+
+// const detailItems = reactive([
+// { id: 1, name: '房租', remark: '六月份房租', amount: -1200.00, icon: 'i-carbon:home' },
+// { id: 2, name: '学习教育', remark: '网上买了2本书', amount: -500.00, icon: 'i-carbon:book' },
+// { id: 3, name: '购物', remark: '买了一块表', amount: -800.00, icon: 'i-carbon:shopping-cart-arrow-up' },
+// { id: 4, name: '餐饮', remark: '吃了一碗面', amount: -15.00, icon: 'i-carbon:restaurant' },
+// { id: 5, name: '其他', remark: '转账', amount: +15.00, icon: 'i-carbon:tag-export' },
+// ])
 // 主题颜色映射
 const themeColors: Record<string, string> = {
-  房租: 'bg-blue-500',
-  学习教育: 'bg-purple-500',
-  购物: 'bg-red-500',
-  餐饮: 'bg-green-500',
-  其他: 'bg-yellow-500',
+  房租: 'bg-blue',
+  学习: 'bg-purple-500',
+  购物: 'bg-red',
+  美食: 'bg-orange',
+  健身运动: 'bg-green',
+  交通: 'bg-pink',
+  通讯: 'bg-fuchsia',
+  其他: 'bg-rose',
+  医疗: 'bg-cyan',
+  理财: 'bg-blue',
+  工资: 'bg-purple',
+  零花钱: 'bg-cyan',
+  兼职: 'bg-orange',
 }
 function changeMonths(event: any) {
   selectMonths.value = months[event.detail.value]
@@ -29,7 +75,9 @@ function changeMonths(event: any) {
 const percent = computed(() => ((haveCost.value - budgetStart.value) / (budgetEnd.value - budgetStart.value)) * 100)
 
 // 计算今日开销
-const oneDaySum = computed(() => detailItems.reduce((sum, item) => sum + item.amount, 0).toFixed(2))
+function calculateOneDaySum(items: DetailItem[]) {
+  return items.reduce((sum, item) => sum + item.amount, 0).toFixed(2)
+}
 
 // Card info
 const cardInfo = ref([
@@ -104,16 +152,16 @@ const cardInfo = ref([
         <progress :percent="percent" activeColor="#f8c43d" border-radius="25" />
       </view>
     </view>
-    <view mb-2 rounded-lg bg="gray/30">
+    <view v-for="(items, date) in groupedItems" :key="date" mb-2 bg="gray/30" rounded-lg>
       <view flex items-center justify-between py-4>
         <view class="date">
-          6月11日（周二）
+          {{ date }}
         </view>
         <view class="sum" text-size-4>
-          {{ oneDaySum }}
+          {{ calculateOneDaySum(items) }}
         </view>
       </view>
-      <view v-for="item in detailItems" :key="item.id" flex items-center justify-between border-t-0.6 border-t-coolgray border-t-solid>
+      <view v-for="(item, index) in items" :key="index" flex items-center justify-between border-t-0.6 border-t-coolgray border-t-solid>
         <view flex items-center justify-between py-2>
           <view h-10 w-10 rounded-full :class="themeColors[item.name]">
             <span :class="item.icon" h-10 text-size-2xl text-light />

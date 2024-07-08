@@ -64,7 +64,8 @@
     "@vueuse/core": "^10.7.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "vue": "^3.3.8",
-    "vue-i18n": "^9.6.5"
+    "vue-i18n": "^9.6.5",
+    "weixin-js-sdk": "^1.6.5"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.7",
