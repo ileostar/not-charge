@@ -9,6 +9,10 @@
       "type": "page"
     },
     {
+      "path": "pages/budget",
+      "type": "page"
+    },
+    {
       "path": "pages/gpt",
       "type": "page"
     },

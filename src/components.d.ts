@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     Demo: typeof import('./components/Demo.vue')['default']
     GridComponent: typeof import('./components/GridComponent.vue')['default']
     HiCounter: typeof import('./components/HiCounter.vue')['default']
+    IncomeBudget: typeof import('./components/incomeBudget.vue')['default']
     InputEntry: typeof import('./components/InputEntry.vue')['default']
     Keyboard: typeof import('./components/keyboard.vue')['default']
     Tabbar: typeof import('./components/Tabbar.vue')['default']

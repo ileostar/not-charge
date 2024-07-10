@@ -6,6 +6,7 @@
 interface NavigateToOptions {
   url: "/pages/index" |
        "/pages/addData" |
+       "/pages/budget" |
        "/pages/gpt" |
        "/pages/myQRCode" |
        "/pages/scanQRCode" |

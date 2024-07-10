@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
 const records = ref<any[]>([])
+const budgets = ref<any[]>([]);
 
 export function loadRecords() {
   return new Promise((resolve, reject) => {
@@ -38,4 +39,26 @@ export function loadRecords() {
   })
 }
 
-export { records }
+
+export function loadBudgets() {
+  return new Promise((resolve, reject) => {
+    uni.request({
+      url: 'http://localhost:3000/api/budgets',
+      method: 'GET',
+      sslVerify: true,
+      success: (res) => {
+        if (res.statusCode === 200) {
+          const data = Array.isArray(res.data) ? res.data : [];
+          budgets.value = data;
+          resolve(budgets.value);
+        } else {
+          reject(res);
+        }
+      },
+      fail: (error) => {
+        reject(error);
+      },
+    });
+  });
+}
+export { records,budgets }

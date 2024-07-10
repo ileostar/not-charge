@@ -1,58 +1,67 @@
 <script setup lang="ts">
-import { loadRecords, records } from '@/API/loadRecords'
-/** 月份 */
-const months = reactive(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'])
-const selectMonths = ref('六月')
-/** 预算的起始与结束 */
-const budgetStart = ref(2000)
-const budgetEnd = ref(5000)
-const haveCost = ref(2900)
-// 流水账的内容
+import { loadRecords, records, loadBudgets, budgets } from '@/API/loadRecords';
+import { ref, reactive, onMounted, computed } from 'vue';
+
+const months = reactive(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']);
+const selectMonths = ref('六月');
+
+const budgetStart = ref(0); // 初始化为0
+const budgetEnd = ref(0);
+const haveCost = ref(0);
+
 interface DetailItem {
-  name: string
-  remark: string
-  amount: number
-  icon: string
-  date: string
+  name: string;
+  remark: string;
+  amount: number;
+  icon: string;
+  date: string;
 }
-const detailItems = reactive<DetailItem[]>([])
-const groupedItems = reactive<Record<string, DetailItem[]>>({})
-// 加载的时候获得数据
+
+const detailItems = reactive<DetailItem[]>([]);
+const groupedItems = reactive<Record<string, DetailItem[]>>({});
+
 onMounted(async () => {
   try {
-    await loadRecords()
+    await loadRecords();
+    await loadBudgets();
 
-    // 将获取到的数据赋值给 detailItems
+    const currentMonth = new Date().toISOString().slice(0, 7); // 获取当前年份和月份
+    const currentBudget = budgets.value.find((budget: any) => budget.date.startsWith(currentMonth));
+
+    if (currentBudget) {
+      budgetEnd.value = Number(currentBudget.amount);
+    }
+
     detailItems.push(...records.value.map((record: any) => ({
       name: record.name,
       remark: record.note,
       amount: Number.parseFloat(record.amount),
       icon: record.icon,
       date: record.date,
-    })))
+    })));
+
+    // 计算总开销
+    detailItems.forEach((item) => {
+      haveCost.value += item.amount;
+      console.log(budgetStart.value, "开销start------");
+      console.log(budgetEnd.value, "开销end------");
+      console.log(haveCost.value, "开销cost------");
+      console.log(percent, "进度条percent------");
+    });
 
     // 按日期分组数据
     detailItems.forEach((item) => {
-      if (!groupedItems[item.date])
-        groupedItems[item.date] = []
-
-      groupedItems[item.date].push(item)
-    })
+      if (!groupedItems[item.date]) {
+        groupedItems[item.date] = [];
+      }
+      groupedItems[item.date].push(item);
+    });
+  } catch (error) {
+    console.error('加载记录失败', error);
+    console.error('获取预算失败', error);
   }
-  catch (error) {
-    console.error('加载记录失败', error)
-  }
-})
-// const detailItems = reactive([{id:'',name:'',remark:'',amount:'',icon:''}])
+});
 
-// const detailItems = reactive([
-// { id: 1, name: '房租', remark: '六月份房租', amount: -1200.00, icon: 'i-carbon:home' },
-// { id: 2, name: '学习教育', remark: '网上买了2本书', amount: -500.00, icon: 'i-carbon:book' },
-// { id: 3, name: '购物', remark: '买了一块表', amount: -800.00, icon: 'i-carbon:shopping-cart-arrow-up' },
-// { id: 4, name: '餐饮', remark: '吃了一碗面', amount: -15.00, icon: 'i-carbon:restaurant' },
-// { id: 5, name: '其他', remark: '转账', amount: +15.00, icon: 'i-carbon:tag-export' },
-// ])
-// 主题颜色映射
 const themeColors: Record<string, string> = {
   房租: 'bg-blue',
   学习: 'bg-purple-500',
@@ -67,19 +76,30 @@ const themeColors: Record<string, string> = {
   工资: 'bg-purple',
   零花钱: 'bg-cyan',
   兼职: 'bg-orange',
-}
+};
+
 function changeMonths(event: any) {
-  selectMonths.value = months[event.detail.value]
+  selectMonths.value = months[event.detail.value];
 }
+
 // 计算本月预算已用多少（进度条）
-const percent = computed(() => ((haveCost.value - budgetStart.value) / (budgetEnd.value - budgetStart.value)) * 100)
+const percent = computed(() => {
+  if (budgetEnd.value === 0) {
+    return 0;
+  }
+  return (haveCost.value / budgetEnd.value) * -100;
+});
 
-// 计算今日开销
+//修改进度条颜色（当超过100%时）
+const progressColor  = computed(() => {
+  return percent.value > 100 ? 'red' : '#f8c43d';
+});
+
+//计算当日开销
 function calculateOneDaySum(items: DetailItem[]) {
-  return items.reduce((sum, item) => sum + item.amount, 0).toFixed(2)
+  return items.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
 }
 
-// Card info
 const cardInfo = ref([
   {
     title: '支出',
@@ -95,21 +115,15 @@ const cardInfo = ref([
     color: 'bg-green-500',
     icon: 'i-carbon:growth',
   },
-])
+]);
 </script>
 
 <template>
   <view h-full w-full container>
     <header flex items-center justify-between py-4 dark:bg-black>
-      <picker
-        mode="selector"
-        :range="months"
-        @change="changeMonths"
-      >
+      <picker mode="selector" :range="months" @change="changeMonths">
         <view class="flex items-center">
-          <text text-lg text-black font-bold>
-            {{ selectMonths }}
-          </text>
+          <text text-lg text-black font-bold>{{ selectMonths }}</text>
           <view h-8 w-8 flex items-center justify-center rounded-full>
             <span i-icon-park:down-one />
           </view>
@@ -117,19 +131,8 @@ const cardInfo = ref([
       </picker>
       <view flex items-center>
         <view h-8 flex items-center justify-between rounded-full>
-          <navigator
-            url="/pages/myQRCode"
-            open-type="navigate"
-            hover-class="navigator-hover"
-            i-icon-park:two-dimensional-code-two
-            mr-4
-          />
-          <navigator
-            url="/pages/scanQRCode"
-            open-type="navigate"
-            hover-class="navigator-hover"
-            i-icon-park:scanning-two
-          />
+          <navigator url="/pages/myQRCode" open-type="navigate" hover-class="navigator-hover" i-icon-park:two-dimensional-code-two mr-4 />
+          <navigator url="/pages/scanQRCode" open-type="navigate" hover-class="navigator-hover" i-icon-park:scanning-two />
         </view>
       </view>
     </header>
@@ -141,25 +144,17 @@ const cardInfo = ref([
         本月预算
       </view>
       <view flex-base px-2 py-2>
-        <view font-600>
-          ${{ budgetStart }}
-        </view>
-        <view font-600>
-          ${{ budgetEnd }}
-        </view>
+        <view font-600>{{ budgetStart }}</view>
+        <view font-600>{{ budgetEnd }}</view>
       </view>
       <view mb-3 px-2 py-1>
-        <progress :percent="percent" activeColor="#f8c43d" border-radius="25" />
+        <progress :percent="percent" :activeColor=progressColor  border-radius="25" />
       </view>
     </view>
     <view v-for="(items, date) in groupedItems" :key="date" mb-2 bg="gray/30" rounded-lg>
       <view flex items-center justify-between py-4>
-        <view class="date">
-          {{ date }}
-        </view>
-        <view class="sum" text-size-4>
-          {{ calculateOneDaySum(items) }}
-        </view>
+        <view class="date">{{ date }}</view>
+        <view class="sum" text-size-4>{{ calculateOneDaySum(items) }}</view>
       </view>
       <view v-for="(item, index) in items" :key="index" flex items-center justify-between border-t-0.6 border-t-coolgray border-t-solid>
         <view flex items-center justify-between py-2>
@@ -167,17 +162,11 @@ const cardInfo = ref([
             <span :class="item.icon" h-10 text-size-2xl text-light />
           </view>
           <view class="topic flex flex-col justify-center pl-2.5">
-            <text mb-1 flex font-600>
-              {{ item.name }}
-            </text>
-            <text text-size-xs text-bluegray font-300>
-              {{ item.remark }}
-            </text>
+            <text mb-1 flex font-600>{{ item.name }}</text>
+            <text text-size-xs text-bluegray font-300>{{ item.remark }}</text>
           </view>
         </view>
-        <view text-size-4>
-          {{ item.amount > 0 ? `+${item.amount.toFixed(2)}` : item.amount.toFixed(2) }}
-        </view>
+        <view text-size-4>{{ item.amount > 0 ? `+${item.amount.toFixed(2)}` : item.amount.toFixed(2) }}</view>
       </view>
     </view>
     <view h-2 />

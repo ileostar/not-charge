@@ -71,19 +71,6 @@ function addRecord() {
   })
 }
 
-// function loadRecords(){
-//   uni.request({
-//     url: 'http://localhost:3000/api/data',
-//     method: 'GET',
-//     sslVerify: true,
-//     success: (res) => {
-//       console.log('获取记录成功123321', res.data);
-//       records = res.data as any[]; // 显式类型断言
-//     },
-//     fail: (error) => {console.log(error.errMsg);
-//     }
-//   })
-// }
 
 // 点击保存收起键盘
 const visitkb = ref(false)
