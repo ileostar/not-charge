@@ -1,184 +1,129 @@
 <script setup lang="ts">
-const theType = defineProps(['currentType'])
-const emit = defineEmits(['result', 'save', 'changecVisit'])
-const input = ref('')
-let OperatorStart = false
-const Savebutton = ref('保存')
-const displayinput: Ref<string> = ref('')
+import { ref } from 'vue';
+
+const theType = defineProps(['currentOFtype']);
+const emit = defineEmits(['result', 'save', 'changecVisit']);
+const input = ref('');
+const displayinput = ref<string>('');
+const Savebutton = ref('保存');
+let OperatorStart = false;
+
 function NumberCk(key: string) {
   if (key === '.') {
-    // 获取最后一个操作数
-    const segments = displayinput.value.split(/[\+\-]/)
-    const lastSegment = segments[segments.length - 1]
-    // 只有在最后一个操作数中没有小数点时，才允许输入小数点
-    if (lastSegment.includes('.'))
-      return
+    const segments = displayinput.value.split(/[\+\-]/);
+    const lastSegment = segments[segments.length - 1];
+    if (lastSegment.includes('.')) return;
   }
-
-  if (displayinput.value === '' && (key === '+' || key === '-'))
-    return
-
-  input.value += key
-  displayinput.value += key
-  emit('result', displayinput)
-  OperatorStart = false // Reset operator start flag on number input
+  if (displayinput.value === '' && (key === '+' || key === '-')) return;
+  input.value += key;
+  displayinput.value += key;
+  emit('result', displayinput.value); // 确保传递字符串
+  OperatorStart = false;
 }
 
 function Operator(operator: string) {
-  // 如果输入为空，或以 + 或 - 结尾，则返回
-  if (displayinput.value === '' || displayinput.value.endsWith('+') || displayinput.value.endsWith('-'))
-    return
-
-  // 如果 OperatorStart 标志为 true，说明前面已经有一个操作符
+  if (displayinput.value === '' || displayinput.value.endsWith('+') || displayinput.value.endsWith('-')) return;
   if (OperatorStart) {
-    // 计算当前表达式的值
-    displayinput.value = Calculation(displayinput.value)
-    // 添加新的操作符
-    displayinput.value += operator
-    emit('result', displayinput)
-  }
-  else {
-    // 计算当前表达式的值
-    displayinput.value = Calculation(displayinput.value)
-    // 添加新的操作符
-    displayinput.value += operator
-    // 将 OperatorStart 标志设为 true，表示已经输入了一个操作符
-    OperatorStart = true
-    // 更新按钮的文本为 '='，表示可以进行求和操作
-    Savebutton.value = '='
-    emit('result', displayinput)
+    displayinput.value = Calculation(displayinput.value);
+    displayinput.value += operator;
+    emit('result', displayinput.value); // 确保传递字符串
+  } else {
+    displayinput.value = Calculation(displayinput.value);
+    displayinput.value += operator;
+    OperatorStart = true;
+    Savebutton.value = '=';
+    emit('result', displayinput.value); // 确保传递字符串
   }
 }
 
 function sum() {
   if (Savebutton.value === '=') {
     try {
-      displayinput.value = Calculation(displayinput.value)
+      displayinput.value = Calculation(displayinput.value);
+    } catch (e) {
+      displayinput.value = 'error';
     }
-    catch (e) {
-      displayinput.value = 'error'
-    }
-    input.value = ''
-    Savebutton.value = '保存'
-    emit('result', displayinput)
-    OperatorStart = false
-  }
-  else {
-    // 将收入/支出按钮的金额自动转换乘正负数
-    if (theType.currentType === 'income') {
-      displayinput.value = Calculation(displayinput.value)
-    }
-    else {
-      // 使用 Calculation 函数，并取负
-      const result = Calculation(displayinput.value)
-      const numericResult = Number.parseFloat(result)
-      if (!Number.isNaN(numericResult)) { // 确保可以转换为数字
-        displayinput.value = (-numericResult).toString()
-      }
-      else {
-        // 处理无法转换为数字的情况
-        displayinput.value = '0' // 或者其他适当的默认值
-        console.error('Invalid input:', result)
-      }
-    }
+    input.value = '';
+    Savebutton.value = '保存';
+    emit('result', displayinput.value); // 确保传递字符串
+    OperatorStart = false;
+  } else {
+    const result = Calculation(displayinput.value);
+    if (theType.currentOFtype === 'income') {
+      displayinput.value = result;
+    } else {
+      const numericResult = Number.parseFloat(result);
+      console.log("这是支出的numericResult",numericResult);
 
-    emit('save', displayinput)
-    displayinput.value = ''
-    emit('result', displayinput)
-    emit('changecVisit', false)
+      if (!Number.isNaN(numericResult)) {
+        displayinput.value = (-numericResult).toString();
+      } else {
+        displayinput.value = '0';
+        console.error('Invalid input:', result);
+      }
+    }
+    console.log("这是支出的displayinput",displayinput);
+    console.log("这是支出的displayinput.value",displayinput.value);
+    emit('save', displayinput.value); // 确保传递字符串
+    console.log("这是支出的displayinput.value,注意，这里已经传出去了",displayinput.value);
+    displayinput.value = '';
+    emit('result', displayinput.value); // 确保传递字符串
+    emit('changecVisit', false);
+
   }
 }
+
+
 
 function Calculation(money: string): string {
-  if (money.includes('-') && money.indexOf('-') !== 0) { // 减
-    return `${accSub(Number.parseFloat(money.split('-')[0] || '0'), Number.parseFloat(money.split('-')[1] || '0'))}`
-  }
-  else if (money.includes('+')) { // 加
-    return `${accAdd(Number.parseFloat(money.split('+')[0] || '0'), Number.parseFloat(money.split('+')[1] || '0'))}`
-  }
-  else if (money.indexOf('-') === 0 && money.split('-')[2]) { // 减
-    return `${accSub(Number.parseFloat(`-${money.split('-')[1] || '0'}`), Number.parseFloat(money.split('-')[2] || '0'))}`
-  }
-  else {
-    return `${Number.parseFloat(money)}`
+  if (money.includes('-') && money.indexOf('-') !== 0) {
+    return `${accSub(Number.parseFloat(money.split('-')[0] || '0'), Number.parseFloat(money.split('-')[1] || '0'))}`;
+  } else if (money.includes('+')) {
+    return `${accAdd(Number.parseFloat(money.split('+')[0] || '0'), Number.parseFloat(money.split('+')[1] || '0'))}`;
+  } else if (money.indexOf('-') === 0 && money.split('-')[2]) {
+    return `${accSub(Number.parseFloat(`-${money.split('-')[1] || '0'}`), Number.parseFloat(money.split('-')[2] || '0'))}`;
+  } else {
+    return `${Number.parseFloat(money)}`;
   }
 }
+
 function deleteText() {
   if (displayinput.value.length > 1) {
-    displayinput.value = displayinput.value.slice(0, -1)
-    emit('result', displayinput)
-  }
-
-  else {
-    displayinput.value = '0'
-    emit('result', displayinput)
+    displayinput.value = displayinput.value.slice(0, -1);
+    emit('result', displayinput.value); // 确保传递字符串
+  } else {
+    displayinput.value = '0';
+    emit('result', displayinput.value); // 确保传递字符串
   }
 }
 </script>
 
 <template>
   <view>
-    <!-- <view class="uni-input Numberinput" border-blue border-solid>
-      <text bg-pink text-black>
-        {{ displayinput }}
-      </text>
-      <text class="myfous" />
-    </view> -->
-
     <view class="mybrankmask">
       <view style="padding: 20rpx;">
         <view class="MymaskList">
-          <view class="maskListItem" text-black @click="NumberCk('1')">
-            1
-          </view>
-          <view class="maskListItem" text-black @click="NumberCk('2')">
-            2
-          </view>
-          <view class="maskListItem" text-black @click="NumberCk('3')">
-            3
-          </view>
-          <view class="maskListItem" style="background-color: #FFA500;color: #fff;" @click="deleteText">
-            删除
-          </view>
+          <view class="maskListItem" text-black @click="NumberCk('1')">1</view>
+          <view class="maskListItem" text-black @click="NumberCk('2')">2</view>
+          <view class="maskListItem" text-black @click="NumberCk('3')">3</view>
+          <view class="maskListItem" style="background-color: #FFA500;color: #fff;" @click="deleteText">删除</view>
         </view>
         <view class="MymaskList">
-          <view class="maskListItem" text-black @click="NumberCk('4')">
-            4
-          </view>
-          <view class="maskListItem" text-black @click="NumberCk('5')">
-            5
-          </view>
-          <view class="maskListItem" text-black @click="NumberCk('6')">
-            6
-          </view>
-          <view class="maskListItem" style="background-color: #67C23A;color: #fff;" @click="Operator('+')">
-            +
-          </view>
+          <view class="maskListItem" text-black @click="NumberCk('4')">4</view>
+          <view class="maskListItem" text-black @click="NumberCk('5')">5</view>
+          <view class="maskListItem" text-black @click="NumberCk('6')">6</view>
+          <view class="maskListItem" style="background-color: #67C23A;color: #fff;" @click="Operator('+')">+</view>
         </view>
         <view class="MymaskList">
-          <view class="maskListItem" text-black @click="NumberCk('7')">
-            7
-          </view>
-          <view class="maskListItem" text-black @click="NumberCk('8')">
-            8
-          </view>
-          <view class="maskListItem" text-black @click="NumberCk('9')">
-            9
-          </view>
-          <view class="maskListItem" style="background-color: #F56C6C;color: #fff;" @click="Operator('-')">
-            -
-          </view>
+          <view class="maskListItem" text-black @click="NumberCk('7')">7</view>
+          <view class="maskListItem" text-black @click="NumberCk('8')">8</view>
+          <view class="maskListItem" text-black @click="NumberCk('9')">9</view>
+          <view class="maskListItem" style="background-color: #F56C6C;color: #fff;" @click="Operator('-')">-</view>
         </view>
         <view class="MymaskList">
-          <view class="maskListItem" text-black @click="NumberCk('0')">
-            0
-          </view>
-          <view class="maskListItem" text-black @click="NumberCk('.')">
-            .
-          </view>
-          <view class="maskListItem" style="background-color: #31BDEC;color: #fff;width: 48%;" @click="sum">
-            {{ Savebutton }}
-          </view>
+          <view class="maskListItem" text-black @click="NumberCk('0')">0</view>
+          <view class="maskListItem" text-black @click="NumberCk('.')">.</view>
+          <view class="maskListItem" style="background-color: #31BDEC;color: #fff;width: 48%;" @click="sum">{{ Savebutton }}</view>
         </view>
       </view>
     </view>

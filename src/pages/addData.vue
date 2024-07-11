@@ -43,33 +43,63 @@ function currentItem(item: { name: string, icon: string, color: string }) {
 }
 function getResult(value: any) {
   result.value = value
-  amount.value = value
+  if (currentType.value === 'expense') {
+    amount.value = (-Number(value)).toString()
+  } else {
+    amount.value = value
+  }
+  console.log("这是value", value);
+  console.log("这是amount.value", amount.value);
 }
 const currentItems = computed(() => currentType.value === 'expense' ? expenseItems : incomeItems)
 
-// 添加记录
 function addRecord() {
-  const newRecord = {
-    name,
-    icon,
-    color,
-    amount: amount.value,
-    note: note.value,
-    date: new Date().toLocaleDateString(), // 添加日期字段，可以根据实际需求格式化
+  console.log('原始 amount.value:', amount.value); // 打印原始值
+
+  // 确保 amount.value 是一个字符串
+  const amountString = amount.value.toString();
+
+  console.log('转换后的 amountString:', amountString);
+
+  // 将字符串转换为浮点数
+  const numericAmount = parseFloat(amountString);
+
+  if (isNaN(numericAmount)) {
+    console.error('Invalid amount value:', amountString);
+    return;
   }
+
+  const newRecord = {
+    name: name.value,
+    icon: icon.value,
+    color: color.value,
+    amount: numericAmount,
+    note: note.value,
+    date: new Date().toISOString(),
+  };
+
   uni.request({
     url: 'http://localhost:3000/api/data',
     method: 'POST',
     data: newRecord,
-    success: () => {
-      // console.log('添加记录成功', res.data)
-      // loadRecords(); // 添加成功后重新加载记录
+    success: (res) => {
+      if (res.statusCode === 200) {
+        console.log('添加记录成功', res.data);
+      } else {
+        console.error('添加记录失败', res.data);
+      }
     },
     fail: (err) => {
-      console.error('添加记录失败', err)
+      console.error('添加记录失败', err);
     },
-  })
+  });
 }
+
+
+
+
+
+
 
 
 // 点击保存收起键盘
@@ -115,7 +145,7 @@ function showKeyboard() {
       <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" @changes-visit="showKeyboard" />
     </view>
     <!-- 键盘 -->
-    <keyboard v-if="visitkb" :current-type="currentType" @result="getResult" @save="addRecord" @changec-visit="closeKeyboard" />
+    <keyboard v-if="visitkb" :currentOFtype="currentType" @result="getResult" @save="addRecord" @changec-visit="closeKeyboard" />
   </view>
 </template>
 
