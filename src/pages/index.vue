@@ -26,27 +26,35 @@ onMounted(async () => {
     await loadBudgets();
 
     const currentMonth = new Date().toISOString().slice(0, 7); // 获取当前年份和月份
+
     const currentBudget = budgets.value.find((budget: any) => budget.date.startsWith(currentMonth));
+
+    console.log('这是预算currentBudget',currentBudget);
+
 
     if (currentBudget) {
       budgetEnd.value = Number(currentBudget.amount);
     }
-
-    detailItems.push(...records.value.map((record: any) => ({
+    console.log('这是预算budgetEnd',budgetEnd);
+    detailItems.unshift(...records.value.map((record: any) => ({
       name: record.name,
       remark: record.note,
       amount: Number.parseFloat(record.amount),
       icon: record.icon,
-      date: record.date,
+      date: record.date.slice(0, 10),
     })));
+
+    // 按日期降序排序 detailItems
+    detailItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    console.log('这是detailItems',detailItems);
 
     // 计算总开销
     detailItems.forEach((item) => {
       haveCost.value += item.amount;
-      console.log(budgetStart.value, "开销start------");
-      console.log(budgetEnd.value, "开销end------");
-      console.log(haveCost.value, "开销cost------");
-      console.log(percent, "进度条percent------");
+      // console.log(budgetStart.value, "开销start------");
+      // console.log(budgetEnd.value, "开销end------");
+      // console.log(haveCost.value, "开销cost------");
+      // console.log(percent, "进度条percent------");
     });
 
     // 按日期分组数据
@@ -54,7 +62,7 @@ onMounted(async () => {
       if (!groupedItems[item.date]) {
         groupedItems[item.date] = [];
       }
-      groupedItems[item.date].push(item);
+      groupedItems[item.date].unshift(item);
     });
   } catch (error) {
     console.error('加载记录失败', error);

@@ -46,6 +46,18 @@ const trysoHard = sequelize.define('trysoHard', {
   timestamps: true,
 });
 
+
+const tryBudget=sequelize.define('tryBudget',{
+  amount:{
+    type:DataTypes.STRING,
+    allowNull: false,
+  },
+  date:{
+    type:DataTypes.DATE,
+    allowNull: false,
+  }
+})
+
 sequelize.sync()
   .then(() => {
     console.log('Models synchronized successfully.');
@@ -57,6 +69,7 @@ sequelize.sync()
 module.exports = {
   sequelize,
   trysoHard,
+  tryBudget
 };
 
 // // 定义记账数据模型

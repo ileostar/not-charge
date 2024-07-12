@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import IncomeBudget from '@/components/incomeBudget.vue';
-import { loadBudgets } from '@/API/loadRecords';
+import { loadBudgets, budgets } from '@/API/loadRecords';
 
+interface Budget {
+  id: number;
+  amount: number;
+  date: string;
+}
 
-const budgets = ref<Array<{ amount: number, date: string }>>([]); // 存放预算列表的数组
+const getbudgets = ref<Budget[]>([]);
 const showModal = ref(false);
 const isEditMode = ref(false);
 const budgetAmount = ref<number | null>(null);
@@ -21,63 +26,75 @@ const openModal = (amount: number | null = null, date: string | null = null, ind
 
 const closeModal = () => {
   showModal.value = false;
-  console.log(budgets);
-
+  budgetAmount.value = null;
+  budgetDate.value = null;
+  currentEditIndex.value = null;
 };
 
 const handleDateChange = (event: any) => {
   budgetDate.value = event.detail.value;
 };
 
-const saveBudget = () => {
+const saveBudget = async () => {
   if (budgetAmount.value !== null && budgetDate.value !== null) {
     const newBudget = {
       amount: budgetAmount.value,
       date: budgetDate.value
     };
 
-    // 发送请求保存数据
-    uni.request({
-      url: 'http://localhost:3000/api/budgets',
-      method: 'POST',
-      data: newBudget,
-      success: (res) => {
-        if (res.statusCode === 200) {
-          if (isEditMode.value && currentEditIndex.value !== null) {
-            budgets.value[currentEditIndex.value] = newBudget; // 修改现有条目
-            console.log("修改现有条目",budgets);
+    try {
+      let res;
+      if (isEditMode.value && currentEditIndex.value !== null) {
+        // 编辑模式，发送 PUT 请求
+        const id = getbudgets.value[currentEditIndex.value].id;
+        res = await uni.request({
+          url: `http://localhost:3000/api/budgets/${id}`,
+          method: 'PUT',
+          data: newBudget
+        });
 
-          } else {
-            budgets.value.unshift(newBudget); // 新增条目
-            console.log("新增条目",budgets);
+        const responseData = res.data;
 
-          }
-          // 更新本地存储
-    uni.setStorageSync('budgets', JSON.stringify(budgets.value));
+        if (res.statusCode === 200 && responseData && typeof responseData === 'object' && 'id' in responseData) {
+          getbudgets.value[currentEditIndex.value] = { ...newBudget, id }; // 更新现有条目
+          closeModal();
+        } else {
+          console.error('更新预算失败', res);
+        }
+      } else {
+        // 新增模式，发送 POST 请求
+        res = await uni.request({
+          url: 'http://localhost:3000/api/budgets',
+          method: 'POST',
+          data: newBudget
+        });
+
+        const responseData = res.data;
+
+        if (res.statusCode === 200 && responseData && typeof responseData === 'object' && 'id' in responseData) {
+          getbudgets.value.unshift({ ...newBudget, id: responseData.id }); // 新增条目
           closeModal();
         } else {
           console.error('保存预算失败', res);
         }
-      },
-      fail: (error) => {
-        console.error('保存预算失败', error);
       }
-    });
+    } catch (error) {
+      console.error('保存预算失败', error);
+    }
   }
 };
 
 
 
 
-// 加载本地存储中的预算数据
-onMounted(() => {
-  const savedBudgets = uni.getStorageSync('budgets');
-  if (savedBudgets) {
-    budgets.value = JSON.parse(savedBudgets);
+onMounted(async () => {
+  try {
+    await loadBudgets();
+    getbudgets.value = budgets.value;
+  } catch (error) {
+    console.error('加载预算失败', error);
   }
 });
-
-
 </script>
 
 <template>
@@ -88,7 +105,7 @@ onMounted(() => {
     </view>
     <view class="text-sm text-gray-500 mb-4">点击可以进行编辑，删除。</view>
 
-    <IncomeBudget @edit="openModal" :budgets="budgets"/>
+    <IncomeBudget @edit="openModal" :budgets="getbudgets"/>
 
     <view v-if="showModal" class="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] flex justify-center items-center z-1000" @click="closeModal">
       <view class="bg-white w-2/3 rounded p-4" @click.stop>

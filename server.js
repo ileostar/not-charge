@@ -1,15 +1,14 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const { sequelize, trysoHard } = require('./db');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const { sequelize, trysoHard, tryBudget } = require('./db');
 const { log } = require('console');
 
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
-app.use(bodyParser.json())
-app.use(cors())
-
+app.use(bodyParser.json());
+app.use(cors());
 
 // 中间件: 验证并处理请求数据
 app.use((req, res, next) => {
@@ -25,23 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
-//const dataStorage = []
-const budgetStorage = [];
-
 // 将数据存储到数据库中
-// app.post('/api/data', async (req, res) => {
-//   try {
-//     const data = req.body;
-//     await trysoHard.create(data); // 使用 Record 模型创建新记录
-//     res.status(200).send('Data stored');
-//   } catch (error) {
-//     console.error('Error storing data:', error);
-//     res.status(500).send('Error storing data');
-//   }
-// });
-
-
 app.post('/api/data', async (req, res) => {
   const data = req.body;
   console.log('Received data:', data); // 打印接收到的数据
@@ -57,7 +40,6 @@ app.post('/api/data', async (req, res) => {
   }
 });
 
-
 // 从数据库中获取数据
 app.get('/api/data', async (req, res) => {
   try {
@@ -69,29 +51,54 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
-// 添加或更新预算数据
-app.post('/api/budgets', (req, res) => {
-  const { amount, date } = req.body;
-  const existingIndex = budgetStorage.findIndex(budget => budget.date === date);
-
-  if (existingIndex >= 0) {
-    budgetStorage[existingIndex].amount = amount;
-  } else {
-    budgetStorage.push({ amount, date });
+app.post('/api/budgets', async (req, res) => {
+  const data = req.body;
+  try {
+    const newBudget = await tryBudget.create(data);
+    res.status(200).json(newBudget); // 返回创建的预算对象
+  } catch (error) {
+    console.error('Failed to create record:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Stack trace:', error.stack);
+    res.status(500).json({ error: 'Failed to create record', details: error.message });
   }
-
-  res.status(200).send('Budget stored');
 });
 
+app.put('/api/budgets/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const budget = await tryBudget.findByPk(id);
+    if (budget) {
+      await budget.update(req.body);
+      res.status(200).json(budget); // 返回更新后的预算对象
+    } else {
+      res.status(404).json({ message: 'Budget not found' });
+    }
+  } catch (error) {
+    console.error('Failed to update record:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Stack trace:', error.stack);
+    res.status(500).json({ error: 'Failed to update record', details: error.message });
+  }
+});
+
+
+
 // 获取预算数据
-app.get('/api/budgets', (req, res) => {
-  res.json(budgetStorage);
+app.get('/api/budgets', async (req, res) => {
+  try {
+    const theBudgets = await tryBudget.findAll();
+    res.json(theBudgets);
+  } catch (error) {
+    console.error('Error fetching budgets:', error);
+    res.status(500).send('Error fetching budgets');
+  }
 });
 
 // Handle requests to the root path
 app.get('/', (req, res) => {
-  res.send('Welcome to my API server') // Replace with your message or HTML content
-})
+  res.send('Welcome to my API server'); // Replace with your message or HTML content
+});
 
 app.listen(port, async () => {
   try {
@@ -102,4 +109,4 @@ app.listen(port, async () => {
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
-})
+});
