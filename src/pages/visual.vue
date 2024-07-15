@@ -1,86 +1,195 @@
 <template>
+  <ChartTop @choseTypes="choseType"/>
   <view class="charts-box">
     <qiun-data-charts
-      type="column"
+      type="line"
       :opts="opts"
       :chartData="chartData"
     />
   </view>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
+import { loadRecords, records } from '@/API/loadRecords';
+import useCurrentWeekRange from '@/composables/useGetdate';
+const { currentWeek } = useCurrentWeekRange();
 
-export default {
-  data() {
-    return {
-      chartData: {},
-      //您可以通过修改 config-ucharts.js 文件中下标为 ['column'] 的节点来配置全局默认参数，如都是默认参数，此处可以不传 opts 。实际应用过程中 opts 只需传入与全局默认参数中不一致的【某一个属性】即可实现同类型的图表显示不同的样式，达到页面简洁的需求。
-      opts: {
-        color: ["#FAC858","#EE6666","#FAC858","#EE6666","#73C0DE","#3CA272","#FC8452","#9A60B4","#ea7ccc"],
-        padding: [15,15,0,5],
-        enableScroll: false,
-        legend: {},
-        xAxis: {
-          disableGrid: true
-        },
-        yAxis: {
-          data: [
-            {
-              min: 0
-            }
-          ]
-        },
-        extra: {
-          column: {
-            type: "group",
-            width: 30,
-            activeBgColor: "#000000",
-            activeBgOpacity: 0.08,
-            linearType: "custom",
-            seriesGap: 5,
-            linearOpacity: 0.5,
-            barBorderCircle: true,
-            customColor: [
-              "#FA7D8D",
-              "#EB88E2"
-            ]
-          }
-        }
-      }
-    };
+// 定义响应式的数据对象
+const chartData = ref({});
+const currentType = ref('expense');
+
+// 定义 opts 对象
+const opts = ref({
+  color: ["#1890FF", "#91CB74", "#FAC858", "#EE6666", "#73C0DE", "#3CA272", "#FC8452", "#9A60B4", "#ea7ccc"],
+  padding: [15, 10, 0, 15],
+  enableScroll: false,
+  legend: {},
+  xAxis: {
+    disableGrid: true
   },
-  onReady() {
-    this.getServerData();
+  yAxis: {
+    gridType: "dash",
+    dashLength: 2
   },
-  methods: {
-    getServerData() {
-      //模拟从服务器获取数据时的延时
-      setTimeout(() => {
-        //模拟服务器返回数据，如果数据格式和标准格式不同，需自行按下面的格式拼接
-        let res = {
-            categories: ["2018","2019","2020","2021","2022","2023"],
-            series: [
-              {
-                name: "目标值",
-                data: [35,36,31,33,13,34]
-              },
-              {
-                name: "完成量",
-                data: [18,27,21,24,6,28]
-              }
-            ]
-          };
-        this.chartData = JSON.parse(JSON.stringify(res));
-      }, 500);
-    },
+  extra: {
+    line: {
+      type: "straight",
+      width: 2,
+      activeType: "hollow"
+    }
   }
+});
+
+// 定义周数据对象
+const weekCost = ref({
+  monday: 0,
+  tuesday: 0,
+  wednesday: 0,
+  thursday: 0,
+  friday: 0,
+  saturday: 0,
+  sunday: 0,
+});
+
+const weekIncome = ref({
+  monday: 0,
+  tuesday: 0,
+  wednesday: 0,
+  thursday: 0,
+  friday: 0,
+  saturday: 0,
+  sunday: 0,
+});
+
+// 选择类型函数
+function choseType(type) {
+  currentType.value = type;
+  updateChartData();
+}
+
+// 更新图表数据
+function updateChartData() {
+  const weekData = currentType.value === 'income' ? weekIncome.value : weekCost.value;
+  const res = {
+    categories: [currentWeek.value.monday,
+                currentWeek.value.tuesday,
+                currentWeek.value.wednesday,
+                currentWeek.value.thursday,
+                currentWeek.value.friday,
+                currentWeek.value.saturday,
+                currentWeek.value.sunday],
+    series: [
+      {
+        name: "数据",
+        data: [weekData.monday,
+               weekData.tuesday,
+               weekData.wednesday,
+               weekData.thursday,
+               weekData.friday,
+               weekData.saturday,
+               weekData.sunday]
+      },
+    ]
+  };
+  chartData.value = res;
+}
+
+// 获取服务器数据的函数
+const getServerData = async () => {
+  await loadRecords();
+  await useCurrentWeekRange();
+
+  // 重置周数据
+  weekCost.value = {
+    monday: 0,
+    tuesday: 0,
+    wednesday: 0,
+    thursday: 0,
+    friday: 0,
+    saturday: 0,
+    sunday: 0,
+  };
+
+  weekIncome.value = {
+    monday: 0,
+    tuesday: 0,
+    wednesday: 0,
+    thursday: 0,
+    friday: 0,
+    saturday: 0,
+    sunday: 0,
+  };
+
+  records.value.forEach(record => {
+    const recordDate = record.date.split('T')[0];
+    switch(recordDate.substring(5, 10)) {
+      case currentWeek.value.monday:
+        if (record.amount > 0) {
+          weekIncome.value.monday += record.amount;
+        } else {
+          weekCost.value.monday += Math.abs(record.amount);
+        }
+        break;
+      case currentWeek.value.tuesday:
+        if (record.amount > 0) {
+          weekIncome.value.tuesday += record.amount;
+        } else {
+          weekCost.value.tuesday += Math.abs(record.amount);
+        }
+        break;
+      case currentWeek.value.wednesday:
+        if (record.amount > 0) {
+          weekIncome.value.wednesday += record.amount;
+        } else {
+          weekCost.value.wednesday += Math.abs(record.amount);
+        }
+        break;
+      case currentWeek.value.thursday:
+        if (record.amount > 0) {
+          weekIncome.value.thursday += record.amount;
+        } else {
+          weekCost.value.thursday += Math.abs(record.amount);
+        }
+        break;
+      case currentWeek.value.friday:
+        if (record.amount > 0) {
+          weekIncome.value.friday += record.amount;
+        } else {
+          weekCost.value.friday += Math.abs(record.amount);
+        }
+        break;
+      case currentWeek.value.saturday:
+        if (record.amount > 0) {
+          weekIncome.value.saturday += record.amount;
+        } else {
+          weekCost.value.saturday += Math.abs(record.amount);
+        }
+        break;
+      case currentWeek.value.sunday:
+        if (record.amount > 0) {
+          weekIncome.value.sunday += record.amount;
+        } else {
+          weekCost.value.sunday += Math.abs(record.amount);
+        }
+        break;
+    }
+  });
+
+  // 初始化图表数据
+  updateChartData();
 };
+
+// 组件挂载时调用 getServerData 函数
+onMounted(() => {
+  getServerData();
+});
 </script>
 
 <style scoped>
-  /* 请根据实际需求修改父元素尺寸，组件自动识别宽高 */
-  .charts-box {
-    width: 100%;
-    height: 300px;
-  }
+/* 请根据实际需求修改父元素尺寸，组件自动识别宽高 */
+.charts-box {
+  width: 100%;
+  height: 300px;
+}
 </style>
