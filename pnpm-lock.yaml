@@ -53,6 +53,9 @@ importers:
       '@vueuse/core':
         specifier: ^10.7.2
         version: 10.9.0(vue@3.4.26(typescript@5.4.5))
+      echarts:
+        specifier: ^5.5.1
+        version: 5.5.1
       mysql2:
         specifier: ^3.10.2
         version: 3.10.2
@@ -62,6 +65,9 @@ importers:
       sequelize:
         specifier: ^6.37.3
         version: 6.37.3(mysql2@3.10.2)
+      ucharts:
+        specifier: ^0.0.0
+        version: 0.0.0
       vue:
         specifier: ^3.3.8
         version: 3.4.26(typescript@5.4.5)
@@ -97,7 +103,7 @@ importers:
         specifier: ^1.1.13
         version: 1.1.13
       '@types/node':
-        specifier: ^20.11.4
+        specifier: ^20.12.8
         version: 20.12.8
       '@uni-helper/eslint-config':
         specifier: ^0.0.6
@@ -2880,6 +2886,9 @@ packages:
   duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
 
+  echarts@5.5.1:
+    resolution: {integrity: sha512-Fce8upazaAXUVUVsjgV6mBnGuqgO+JNDlcgF79Dksy4+wgGpQB2lmYoO4TSweFg/mZITdpGHomw/cNBJZj1icA==, tarball: https://registry.npmmirror.com/echarts/-/echarts-5.5.1.tgz}
+
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
@@ -5122,8 +5131,11 @@ packages:
       '@swc/wasm':
         optional: true
 
+  tslib@2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==, tarball: https://registry.npmmirror.com/tslib/-/tslib-2.3.0.tgz}
+
   tslib@2.6.2:
-    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==, tarball: https://registry.npmmirror.com/tslib/-/tslib-2.6.2.tgz}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -5177,6 +5189,9 @@ packages:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  ucharts@0.0.0:
+    resolution: {integrity: sha512-9SdAEyogf+nAQcG49o2PvuYaWuRzapRImVIWUFome2gxJMZPZAizLXoOQHQLmlbqFr4b0MHh/zwFt+pKYMsSBA==, tarball: https://registry.npmmirror.com/ucharts/-/ucharts-0.0.0.tgz}
 
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
@@ -5577,6 +5592,9 @@ packages:
   yocto-queue@1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
+
+  zrender@5.6.0:
+    resolution: {integrity: sha512-uzgraf4njmmHAbEUxMJ8Oxg+P3fT04O+9p7gY+wJRVxo8Ge+KmYv0WJev945EH4wFuc4OY2NLXz46FZrWS9xJg==, tarball: https://registry.npmmirror.com/zrender/-/zrender-5.6.0.tgz}
 
 snapshots:
 
@@ -9297,6 +9315,11 @@ snapshots:
 
   duplexer@0.1.2: {}
 
+  echarts@5.5.1:
+    dependencies:
+      tslib: 2.3.0
+      zrender: 5.6.0
+
   ee-first@1.1.1: {}
 
   electron-to-chromium@1.4.756: {}
@@ -11953,6 +11976,8 @@ snapshots:
       yn: 3.1.1
     optional: true
 
+  tslib@2.3.0: {}
+
   tslib@2.6.2: {}
 
   type-check@0.4.0:
@@ -12009,6 +12034,8 @@ snapshots:
       possible-typed-array-names: 1.0.0
 
   typescript@5.4.5: {}
+
+  ucharts@0.0.0: {}
 
   ufo@1.5.3: {}
 
@@ -12417,3 +12444,7 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.0.0: {}
+
+  zrender@5.6.0:
+    dependencies:
+      tslib: 2.3.0
