@@ -14,6 +14,7 @@ const userSelectOption2 = reactive([
   { url: '/pages/about', title: '关于', icon: 'i-icon-park:trumpet ' },
   { url: '/pages/settings', title: '设置', icon: 'i-icon-park:setting ' },
 ])
+
 </script>
 
 <template>
@@ -65,14 +66,13 @@ const userSelectOption2 = reactive([
     </view>
 
     <!-- 中间部分 -->
-
     <view class="middle-section mt-2">
       <UserSelect v-for="(i, index) in userSelectOption" :key="index" :title="i.title" :url="i.url" :icon="i.icon" />
     </view>
 
     <!-- 下部分 -->
     <view class="bottom-section mt-2 pb-23">
-      <UserSelect v-for="(i, index) in userSelectOption2" :key="index" :title="i.title" :url="i.url" :icon="i.icon" />
+      <UserSelect v-for="(i, index) in userSelectOption2" :key="index" :title="i.title" :url="i.url" :icon="i.icon"/>
     </view>
   </view>
 </template>

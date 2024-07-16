@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppLogos: typeof import('./components/AppLogos.vue')['default']
     BaseCards: typeof import('./components/BaseCards.vue')['default']
+    CalculatorInput: typeof import('./components/calculatorInput.vue')['default']
     ChartTop: typeof import('./components/chartTop.vue')['default']
     GridComponent: typeof import('./components/GridComponent.vue')['default']
     HiCounter: typeof import('./components/HiCounter.vue')['default']

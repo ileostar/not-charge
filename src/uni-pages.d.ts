@@ -9,6 +9,7 @@ interface NavigateToOptions {
        "/pages/budget" |
        "/pages/gpt" |
        "/pages/myQRCode" |
+       "/pages/salaryCalculator" |
        "/pages/scanQRCode" |
        "/pages/user" |
        "/pages/visual";

@@ -1,6 +1,10 @@
 {
   "pages": [
     {
+      "path": "pages/salaryCalculator",
+      "type": "page"
+    },
+    {
       "path": "pages/index",
       "type": "home"
     },
@@ -20,6 +24,7 @@
       "path": "pages/myQRCode",
       "type": "page"
     },
+
     {
       "path": "pages/scanQRCode",
       "type": "page"
