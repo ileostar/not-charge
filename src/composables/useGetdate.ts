@@ -1,5 +1,3 @@
-// useCurrentWeekRange.ts
-
 import { ref } from 'vue';
 
 interface WeekRange {
@@ -10,6 +8,14 @@ interface WeekRange {
   friday: string;
   saturday: string;
   sunday: string;
+}
+
+interface MonthRange {
+  days: string[];
+}
+
+interface YearRange {
+  months: string[];
 }
 
 export default function useCurrentWeekRange() {
@@ -23,23 +29,23 @@ export default function useCurrentWeekRange() {
     sunday: '',
   });
 
+  const currentMonthRange = ref<MonthRange>({ days: [] });
+  const currentYearRange = ref<YearRange>({ months: [] });
+
   const getCurrentWeekRange = () => {
     const currentDate = new Date();
     const dayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
 
-    // Calculate the date for Monday (first day of the week)
     const distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
     const mondayDate = new Date(currentDate);
     mondayDate.setDate(currentDate.getDate() + distanceToMonday);
 
-    // Create a helper function to format the date as MM-DD
     const formatDate = (date: Date) => {
       const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
       const day = String(date.getDate()).padStart(2, '0');
-      return `${month}-${day}`;
+      return `${date.getFullYear()}-${month}-${day}`;
     };
 
-    // Calculate all days of the week based on Monday
     currentWeek.value = {
       monday: formatDate(mondayDate),
       tuesday: formatDate(new Date(mondayDate.setDate(mondayDate.getDate() + 1))),
@@ -51,11 +57,26 @@ export default function useCurrentWeekRange() {
     };
   };
 
-  // On mounted, get the current week range
+  const getCurrentMonthRange = () => {
+    const currentDate = new Date();
+    const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+    const days = Array.from({ length: daysInMonth }, (_, i) => String(i + 1).padStart(2, '0'));
+    currentMonthRange.value = { days };
+  };
+
+  const getCurrentYearRange = () => {
+    const months = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+    currentYearRange.value = { months };
+  };
+
   getCurrentWeekRange();
+  getCurrentMonthRange();
+  getCurrentYearRange();
 
   return {
     currentWeek,
-    getCurrentWeekRange,
+    currentMonthRange,
+    currentYearRange,
   };
 }

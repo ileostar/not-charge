@@ -1,7 +1,8 @@
 <script setup lang="ts">
+
 const currentType=ref('expense')
 const currentTime=ref('week')
-const emit = defineEmits(['choseTypes']);
+const emit = defineEmits(['choseTypes','selectLimitdate']);
 
 function changeToexpense(){
   currentType.value = 'expense'
@@ -11,7 +12,11 @@ function changeToincome(){
   currentType.value = 'income'
   emit('choseTypes','income')
 }
-
+function changeLimitdate(type:string){
+  currentTime.value=type
+  console.log(type);
+  emit('selectLimitdate',type)
+}
 </script>
 
 <template>
@@ -24,9 +29,9 @@ function changeToincome(){
         <span p-2  :class="currentType === 'income' ? 'bg-rose-4' : ''" @click="changeToincome">收入</span>
       </view>
       <view border-solid  m-2 rounded-2 w-50% flex items-center justify-around border-2>
-        <span p-2 w-33% b-r-solid :class="currentTime === 'week' ? 'bg-rose-4' : ' '" @click="currentTime = 'week'">周</span>
-        <span p-2 w-33% b-r-solid :class="currentTime === 'month' ? 'bg-rose-4' : ' '" @click="currentTime = 'month'">月</span>
-        <span p-2 w-33%  :class="currentTime === 'year' ? 'bg-rose-4' : ' '" @click="currentTime = 'year'">年</span>
+        <span p-2 w-33% b-r-solid :class="currentTime === 'week' ? 'bg-rose-4' : ' '" @click="changeLimitdate('week')">周</span>
+        <span p-2 w-33% b-r-solid :class="currentTime === 'month' ? 'bg-rose-4' : ' '" @click="changeLimitdate('month')">月</span>
+        <span p-2 w-33%  :class="currentTime === 'year' ? 'bg-rose-4' : ' '" @click="changeLimitdate('year')">年</span>
       </view>
     </view>
   </view>

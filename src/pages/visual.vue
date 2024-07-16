@@ -1,32 +1,40 @@
 <template>
-  <ChartTop @choseTypes="choseType"/>
-  <view class="charts-box">
+  <view container bg-gray-100>
+    <ChartTop @choseTypes="choseType" @selectLimitdate="selectLimittime" />
+    <view class="charts-box" mt-10 h-full>
     <qiun-data-charts
       type="line"
       :opts="opts"
       :chartData="chartData"
     />
+    </view>
   </view>
+
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { loadRecords, records } from '@/API/loadRecords';
 import useCurrentWeekRange from '@/composables/useGetdate';
-const { currentWeek } = useCurrentWeekRange();
+const { currentWeek, currentMonthRange, currentYearRange } = useCurrentWeekRange();
 
-// 定义响应式的数据对象
+// 响应式数据
 const chartData = ref({});
 const currentType = ref('expense');
+const timePeriod = ref('week'); // 默认显示周数据
 
-// 定义 opts 对象
+// 图表配置项
 const opts = ref({
-  color: ["#1890FF", "#91CB74", "#FAC858", "#EE6666", "#73C0DE", "#3CA272", "#FC8452", "#9A60B4", "#ea7ccc"],
+  color: ["#1890FF", "#91CB74",],
   padding: [15, 10, 0, 15],
   enableScroll: false,
   legend: {},
   xAxis: {
-    disableGrid: true
+    disableGrid: true,
+    labelCount: 13 , // 显示的标签数量
+    label: {
+      interval: 0, // 强制显示所有数据点
+    },
   },
   yAxis: {
     gridType: "dash",
@@ -41,7 +49,7 @@ const opts = ref({
   }
 });
 
-// 定义周数据对象
+// 初始化周数据
 const weekCost = ref({
   monday: 0,
   tuesday: 0,
@@ -62,45 +70,89 @@ const weekIncome = ref({
   sunday: 0,
 });
 
+// 初始化月数据
+const monthCost = ref([]);
+const monthIncome = ref([]);
+
+// 初始化年数据
+const yearCost = ref([]);
+const yearIncome = ref([]);
+
 // 选择类型函数
 function choseType(type) {
   currentType.value = type;
   updateChartData();
 }
 
-// 更新图表数据
-function updateChartData() {
-  const weekData = currentType.value === 'income' ? weekIncome.value : weekCost.value;
-  const res = {
-    categories: [currentWeek.value.monday,
-                currentWeek.value.tuesday,
-                currentWeek.value.wednesday,
-                currentWeek.value.thursday,
-                currentWeek.value.friday,
-                currentWeek.value.saturday,
-                currentWeek.value.sunday],
-    series: [
-      {
-        name: "数据",
-        data: [weekData.monday,
-               weekData.tuesday,
-               weekData.wednesday,
-               weekData.thursday,
-               weekData.friday,
-               weekData.saturday,
-               weekData.sunday]
-      },
-    ]
-  };
-  chartData.value = res;
+// 选择时间段函数
+function selectLimittime(period) {
+  timePeriod.value = period;
+  updateChartData();
 }
 
-// 获取服务器数据的函数
+// 更新图表数据
+function updateChartData() {
+  let categories = [];
+  let seriesData = [];
+
+  if (timePeriod.value === 'week') {
+    const weekData = currentType.value === 'income' ? weekIncome.value : weekCost.value;
+    categories = [
+      currentWeek.value.monday.split('-')[2],
+      currentWeek.value.tuesday.split('-')[2],
+      currentWeek.value.wednesday.split('-')[2],
+      currentWeek.value.thursday.split('-')[2],
+      currentWeek.value.friday.split('-')[2],
+      currentWeek.value.saturday.split('-')[2],
+      currentWeek.value.sunday.split('-')[2]
+    ];
+    seriesData = [
+      weekData.monday,
+      weekData.tuesday,
+      weekData.wednesday,
+      weekData.thursday,
+      weekData.friday,
+      weekData.saturday,
+      weekData.sunday
+    ];
+  } else if (timePeriod.value === 'month') {
+    categories = currentMonthRange.value.days;
+    seriesData = currentType.value === 'income' ? monthIncome.value : monthCost.value;
+  } else if (timePeriod.value === 'year') {
+    categories = currentYearRange.value.months.map(month => month);
+    seriesData = currentType.value === 'income' ? yearIncome.value : yearCost.value;
+  }
+
+  chartData.value = {
+    categories,
+    series: [
+      {
+        name: currentType.value === 'income' ? "收入" : "支出",
+        data: seriesData
+      }
+    ]
+  };
+}
+
+// 获取服务器数据
 const getServerData = async () => {
   await loadRecords();
-  await useCurrentWeekRange();
 
-  // 重置周数据
+  // 初始化周数据
+  resetWeekData();
+
+  // 初始化月数据
+  resetMonthData();
+
+  // 初始化年数据
+  resetYearData();
+
+  // 更新图表数据
+  updateChartData();
+};
+
+// 重置周数据
+function resetWeekData() {
   weekCost.value = {
     monday: 0,
     tuesday: 0,
@@ -123,71 +175,69 @@ const getServerData = async () => {
 
   records.value.forEach(record => {
     const recordDate = record.date.split('T')[0];
-    switch(recordDate.substring(5, 10)) {
-      case currentWeek.value.monday:
-        if (record.amount > 0) {
-          weekIncome.value.monday += record.amount;
-        } else {
-          weekCost.value.monday += Math.abs(record.amount);
-        }
-        break;
-      case currentWeek.value.tuesday:
-        if (record.amount > 0) {
-          weekIncome.value.tuesday += record.amount;
-        } else {
-          weekCost.value.tuesday += Math.abs(record.amount);
-        }
-        break;
-      case currentWeek.value.wednesday:
-        if (record.amount > 0) {
-          weekIncome.value.wednesday += record.amount;
-        } else {
-          weekCost.value.wednesday += Math.abs(record.amount);
-        }
-        break;
-      case currentWeek.value.thursday:
-        if (record.amount > 0) {
-          weekIncome.value.thursday += record.amount;
-        } else {
-          weekCost.value.thursday += Math.abs(record.amount);
-        }
-        break;
-      case currentWeek.value.friday:
-        if (record.amount > 0) {
-          weekIncome.value.friday += record.amount;
-        } else {
-          weekCost.value.friday += Math.abs(record.amount);
-        }
-        break;
-      case currentWeek.value.saturday:
-        if (record.amount > 0) {
-          weekIncome.value.saturday += record.amount;
-        } else {
-          weekCost.value.saturday += Math.abs(record.amount);
-        }
-        break;
-      case currentWeek.value.sunday:
-        if (record.amount > 0) {
-          weekIncome.value.sunday += record.amount;
-        } else {
-          weekCost.value.sunday += Math.abs(record.amount);
-        }
-        break;
+    updateWeeklyData(record, recordDate);
+  });
+}
+
+// 更新周数据
+function updateWeeklyData(record, recordDate) {
+  if (recordDate === currentWeek.value.monday ||
+      recordDate === currentWeek.value.tuesday ||
+      recordDate === currentWeek.value.wednesday ||
+      recordDate === currentWeek.value.thursday ||
+      recordDate === currentWeek.value.friday ||
+      recordDate === currentWeek.value.saturday ||
+      recordDate === currentWeek.value.sunday) {
+    const dayOfWeek = new Date(record.date).getDay();
+    const dayKey = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][dayOfWeek];
+
+    if (record.amount > 0) {
+      weekIncome.value[dayKey] += record.amount;
+    } else {
+      weekCost.value[dayKey] += Math.abs(record.amount);
+    }
+  }
+}
+
+// 重置月数据
+function resetMonthData() {
+  const daysInMonth = new Date().getDate();
+  monthCost.value = Array(daysInMonth).fill(0);
+  monthIncome.value = Array(daysInMonth).fill(0);
+
+  records.value.forEach(record => {
+    const dayOfMonth = new Date(record.date).getDate() - 1; // array index starts from 0
+    if (record.amount > 0) {
+      monthIncome.value[dayOfMonth] += record.amount;
+    } else {
+      monthCost.value[dayOfMonth] += Math.abs(record.amount);
     }
   });
+}
 
-  // 初始化图表数据
-  updateChartData();
-};
+// 重置年数据
+function resetYearData() {
+  yearCost.value = Array(12).fill(0);
+  yearIncome.value = Array(12).fill(0);
 
-// 组件挂载时调用 getServerData 函数
+  records.value.forEach(record => {
+    const monthOfYear = new Date(record.date).getMonth();
+    if (record.amount > 0) {
+      yearIncome.value[monthOfYear] += record.amount;
+    } else {
+      yearCost.value[monthOfYear] += Math.abs(record.amount);
+    }
+  });
+}
+
+// 组件挂载时获取数据
+import { onMounted } from 'vue';
 onMounted(() => {
   getServerData();
 });
 </script>
 
 <style scoped>
-/* 请根据实际需求修改父元素尺寸，组件自动识别宽高 */
 .charts-box {
   width: 100%;
   height: 300px;

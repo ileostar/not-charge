@@ -51,12 +51,7 @@ onMounted(async () => {
     // 计算总开销
     detailItems.forEach((item) => {
       haveCost.value += item.amount;
-      // console.log(budgetStart.value, "开销start------");
-      // console.log(budgetEnd.value, "开销end------");
-      // console.log(haveCost.value, "开销cost------");
-      // console.log(percent, "进度条percent------");
     });
-
     // 按日期分组数据
     detailItems.forEach((item) => {
       if (!groupedItems[item.date]) {
@@ -68,6 +63,7 @@ onMounted(async () => {
     console.error('加载记录失败', error);
     console.error('获取预算失败', error);
   }
+
 });
 
 const themeColors: Record<string, string> = {
@@ -95,8 +91,9 @@ const percent = computed(() => {
   if (budgetEnd.value === 0) {
     return 0;
   }
-  return (haveCost.value / budgetEnd.value) * -100;
+  return (haveCost.value / budgetEnd.value) * 100;
 });
+
 
 //修改进度条颜色（当超过100%时）
 const progressColor  = computed(() => {

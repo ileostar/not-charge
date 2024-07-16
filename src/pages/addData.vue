@@ -95,13 +95,6 @@ function addRecord() {
   });
 }
 
-
-
-
-
-
-
-
 // 点击保存收起键盘
 const visitkb = ref(false)
 function closeKeyboard() {
