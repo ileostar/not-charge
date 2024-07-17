@@ -28,6 +28,7 @@ declare module '@vue/runtime-core' {
     QiunLoadingLoading5: typeof import('./components/qiun-loading/loading5.vue')['default']
     QiunLoadingQiunLoading: typeof import('./components/qiun-loading/qiun-loading.vue')['default']
     Tabbar: typeof import('./components/Tabbar.vue')['default']
+    ToolSelector: typeof import('./components/ToolSelector.vue')['default']
     UserSelect: typeof import('./components/UserSelect.vue')['default']
   }
 }

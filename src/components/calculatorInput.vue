@@ -1,37 +1,72 @@
 <script setup lang="ts">
-import { defineProps, computed, defineEmits } from 'vue';
+const props = defineProps(['fiexedOFair', 'frequencyOFair', 'currentMode','bankProps','currentRepaytype']);
+const result=ref()
+const bmiResult=ref()
+// const selectMode = computed(() => {
+//   return props.currentMode === 'isFixed' ? props.fiexedOFair : props.frequencyOFair;
+// });
 
-const props = defineProps(['fiexedOFair', 'frequencyOFair', 'currentMode']);
-const emit = defineEmits(['getonedayCost']);
-
+// 根据当前模式选择输入框的数据
 const selectMode = computed(() => {
-  return props.currentMode === 'isFixed' ? props.fiexedOFair : props.frequencyOFair;
+  if (props.currentMode === 'isFixed') {
+    return props.fiexedOFair;
+  } else if (props.currentMode === 'frequency') {
+    return props.frequencyOFair;
+  } else {
+   return props.bankProps;
+  }
 });
-
 /**计算一天的总电费 */
-const onedayCost = computed(() => {
+
+function onedayCostfn(){
+  /**输入功率，每天使用，一度电的电费以及总电费 */
   const power = parseFloat(selectMode.value[0].value) || 0;
   const hours = parseFloat(selectMode.value[1].value) || 0;
   const rate = parseFloat(selectMode.value[2].value) || 0;
-  if(selectMode.value==='isFixed'){
-    return (power / 1000) * hours * rate;
+  if(selectMode.value==props.fiexedOFair){
+    result.value= (power / 1000) * hours * rate;
   }else{
-    return (power / 1136) * hours * rate;
+    result.value= (power / 1136) * hours * rate;
   }
-});
+    return  result.value
+}
 
-// 计算并通过事件传递结果
-const calculateCost = () => {
-  emit('getonedayCost', onedayCost.value);
-};
+function getBMI(){
+  const height=parseFloat(selectMode.value[0].value)/100 || 0;
+  const weight=parseFloat(selectMode.value[1].value) || 0;
+  bmiResult.value=(weight/(height*height))
 
-// 将方法暴露给父组件
-export { calculateCost };
+  if(selectMode.value==props.bankProps){
+    return bmiResult.value.toFixed(2)
+  }else{
+    return bmiResult.value.toFixed(2)
+  }
+
+}
+
+function maxLengthForInput(item:any) {
+  // 根据不同的输入项，设置不同的最大长度限制
+  if (item.title === '输入功率（W）') {
+    return 5; // 限制为最多5个字符
+  } else if (item.title === '每天使用（h）') {
+    return 2; // 限制为最多2个字符
+  } else if (item.title === '电费（元）/度') {
+    return 8; // 限制为最多8个字符
+  } else {
+    return 5; // 默认限制为最多10个字符
+  }
+}
+
+/**用ref()调用子组件方法需要暴露 */
+defineExpose({
+  onedayCostfn,getBMI
+})
+
 </script>
 
 <template>
   <view flex items-center justify-between m-3 v-for="(i, index) in selectMode" :key="index">
     <span font-800>{{ i.title }}</span>
-    <input v-model="i.value" type="number" :placeholder="i.placeHolder" text-left border-solid border-2>
+    <input v-model="i.value" type="number"  :placeholder="i.placeHolder" text-left border-solid :maxlength="maxLengthForInput(i)" border-2 >
   </view>
 </template>

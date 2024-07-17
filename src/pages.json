@@ -1,15 +1,15 @@
 {
   "pages": [
     {
-      "path": "pages/salaryCalculator",
-      "type": "page"
-    },
-    {
       "path": "pages/index",
       "type": "home"
     },
     {
       "path": "pages/addData",
+      "type": "page"
+    },
+    {
+      "path": "pages/bankTools",
       "type": "page"
     },
     {
@@ -24,7 +24,10 @@
       "path": "pages/myQRCode",
       "type": "page"
     },
-
+    {
+      "path": "pages/salaryCalculator",
+      "type": "page"
+    },
     {
       "path": "pages/scanQRCode",
       "type": "page"

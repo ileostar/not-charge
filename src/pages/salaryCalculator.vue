@@ -1,64 +1,157 @@
 <script setup lang="ts">
-const currentType = ref('air')
-const currentMode=ref('isFixed')
-/**输入功率，每天使用，一度电的电费以及总电费 */
-const inputPower=ref()
-const dailyUse=ref()
-const electricCost=ref()
-const totalAmount=ref()
+const currentType = ref('air');
+const currentMode = ref('isFixed');
+const currentRepaytype=ref('china')
+/**保留两位小数临时变量和计算结果 */
+const temp = ref();
+const totalAmount = ref();
+/**BMI的结果 */
+const theBMIresult=ref()
+/**输入框的内容区域 */
+const fiexedOFair = reactive([
+  { title: '输入功率（W）', placeHolder: '请输入输入功率(W)', value: '' },
+  { title: '每天使用（h）', placeHolder: '请输入每天使用（h）', value: '' },
+  { title: '电费（元）/度', placeHolder: '输入一度电的费用', value: '' },
+]);
 
-const fiexedOFair=reactive([
-  {title:'输入功率（W）',placeHolder:'请输入输入功率(W)',value:''},
-  {title:'每天使用（h）',placeHolder:'请输入每天使用（h）',value:''},
-  {title:'电费（元）/度',placeHolder:'输入一度电的费用',value:''},
-])
+const frequencyOFair = reactive([
+  { title: '制冷季节耗电量', placeHolder: '请输入制冷季节耗电量', value: '' },
+  { title: '每天使用（h）', placeHolder: '请输入每天使用（h）', value: '' },
+  { title: '电费（元）/度', placeHolder: '输入一度电的费用', value: '' },
+]);
 
-const frequencyOFair=reactive([
-  {title:'制冷季节耗电量',placeHolder:'请输入制冷季节耗电量',value:''},
-  {title:'每天使用（h）',placeHolder:'请输入每天使用（h）',value:''},
-  {title:'电费（元）/度',placeHolder:'输入一度电的费用',value:''},
-])
+// BMI模式下的数据
+const bankProps = reactive([
+  { title: '身高（CM）', placeHolder: '请输入身高', value: '' },
+  { title: '体重（KG）', placeHolder: '请输入体重', value: '' },
+]);
 
-function changeTools(type:string){
-  currentType.value=type
+// 根据BMI值获取身体状况
+function getBMIStatus(bmi: number): string {
+  if(currentRepaytype.value=='china'){
+    if (bmi < 18.5) {
+      return '偏瘦';
+    } else if (bmi >= 18.5 && bmi < 24) {
+      return '正常';
+    } else if (bmi >= 24 && bmi < 28) {
+      return '偏胖';
+    } else {
+      return '肥胖';
+    }
+  }else{
+    if (bmi < 18.5) {
+      return '体重过轻';
+    } else if (bmi >= 18.5 && bmi < 24.9) {
+      return '正常体重';
+    } else if (bmi >= 25 && bmi < 29.9) {
+      return '超重';
+    } else if(bmi >= 30 && bmi < 34.9)  {
+      return 'Ⅰ度肥胖';
+    }else if(bmi >= 35 && bmi < 39.9)  {
+      return 'ⅠⅠ度肥胖';
+    }else {
+      return 'ⅠⅠⅠ度肥胖（极度肥胖）';
+    }
+  }
+
 }
-function changeMode(type:string){
-  currentMode.value=type
+
+// 根据BMI值获取相关疾病发病危险性
+function getBMIRisk(bmi: number): string {
+  if (bmi < 18.5) {
+    return '低';
+  } else if (bmi >= 18.5 && bmi < 24) {
+    return '正常';
+  } else if (bmi >= 24 && bmi < 28) {
+    return '增加';
+  } else {
+    return '高';
+  }
 }
+
+/**改变小工具 */
+function handleChangeTools(type: string) {
+  currentType.value = type;
+  if(type=='air'){
+    currentMode.value='isFixed'
+    fiexedOFair.forEach(item => item.value = '');
+    frequencyOFair.forEach(item => item.value = '');
+    totalAmount.value = '';
+  }else{
+    currentMode.value=''
+    currentRepaytype.value='china'
+    bankProps.forEach(item => item.value = '');
+  }
+}
+/** 改变空调模式并input清零*/
+function changeMode(type: string) {
+  currentMode.value = type;
+  // 清空输入框的值
+  fiexedOFair.forEach(item => item.value = '');
+  frequencyOFair.forEach(item => item.value = '');
+  bankProps.forEach(item => item.value = '');
+  totalAmount.value = '';
+}
+
+function changeBanktypes(type: string){
+  currentRepaytype.value = type;
+}
+
 /**计算一天电费的开销 */
-const gotoThecost=(msg:number)=>{
-  totalAmount.value=msg
+const airRef = ref();
+const BMIRef=ref()
+function getResult() {
+  temp.value = airRef.value.onedayCostfn();
+  /**保留两位小数 */
+  totalAmount.value = Math.floor(temp.value * 100) / 100;
+}
+function getBMIResult(){
+  theBMIresult.value=BMIRef.value.getBMI()
 }
 </script>
 
 <template>
   <view flex flex-col>
-    <view flex flex-col items-center justify-center bg="#f8c43d">
-      <view text-lg font-800>计算小工具</view>
-      <view
-        class="border-solid m-2 rounded-2  flex items-center justify-center bg-coolgray overflow-hidden w-90%">
-        <span class="flex-1 text-center p-2" :class="currentType === 'air' ? 'bg-rose-400' : ''"  @click="changeTools('air')">空调电费</span>
-        <span class="flex-1 text-center p-2" :class="currentType === 'bank' ? 'bg-rose-400' : ''"  @click="changeTools('bank')">银行贷款</span>
+    <tool-selector :currentType="currentType" @changeTools="handleChangeTools" />
+    <view v-if="currentType === 'air'">
+      <!-- 空调电费内容 -->
+      <calculator-input :fiexedOFair="fiexedOFair" :frequencyOFair="frequencyOFair" :currentMode="currentMode" ref="airRef" />
+      <view flex items-center justify-between m-3>
+        <span font-800>选择空调模式</span>
+        <view class="border-solid m-2 rounded-2 flex bg-coolgray overflow-hidden w-45%">
+          <span class="flex-1 text-center p-2 justify-end" :class="currentMode === 'isFixed' ? 'bg-rose-400' : ''" @click="changeMode('isFixed')">定频</span>
+          <span class="flex-1 text-center p-2 justify-end" :class="currentMode === 'frequency' ? 'bg-rose-400' : ''" @click="changeMode('frequency')">变频</span>
+        </view>
+      </view>
+      <view mt-5>
+        <button bg-green-5 @click="getResult">开始计算！</button>
+        <view v-if="totalAmount" mt-4 border-solid border-blue-6>您计算的电费是{{ totalAmount }}元</view>
       </view>
     </view>
-    <view>
-      <view flex flex-col mt-3>
-        <calculatorInput :fiexedOFair="fiexedOFair" :frequencyOFair="frequencyOFair" :currentMode="currentMode"/>
-        <view flex items-center justify-between m-3>
-          <span font-800>选择空调模式</span>
-          <view class="border-solid m-2 rounded-2  flex  bg-coolgray  overflow-hidden w-45%">
-        <span class="flex-1 text-center p-2 justify-end" :class="currentMode === 'isFixed' ? 'bg-rose-400' : ''"  @click="changeMode('isFixed')">定频</span>
-        <span class="flex-1 text-center p-2 justify-end" :class="currentMode === 'frequency' ? 'bg-rose-400' : ''"  @click="changeMode('frequency')">变频</span>
-          </view>
+    <!-- BMMI模式 -->
+    <view v-else-if="currentType === 'bank'">
+      <!-- 通过计算小工具组件来展示BMI内容 -->
+      <CalculatorInput :bankProps="bankProps" :currentRepaytype="currentRepaytype" ref="BMIRef" />
+      <view flex items-center justify-between m-3>
+        <span font-800>还款方式</span>
+        <view class="border-solid m-2 rounded-2 flex bg-coolgray overflow-hidden w-47%">
+          <span class="flex-1 text-center p-2 justify-end" :class="currentRepaytype === 'china' ? 'bg-rose-400' : ''" @click="changeBanktypes('china')">中国标准</span>
+          <span class="flex-1 text-center p-2 justify-end" :class="currentRepaytype === 'international' ? 'bg-rose-400' : ''" @click="changeBanktypes('international')">国际标准</span>
+        </view>
+      </view>
+      <view mt-5>
+        <button bg-green-5 @click="getBMIResult">开始计算！</button>
+        <!-- 根据BMI结果显示 -->
+        <view v-if="theBMIresult" mt-4 border-solid border-blue-6>
+          <span>BMI: {{ theBMIresult }}</span><br>
+          <span>身体状况: {{ getBMIStatus(theBMIresult) }}</span><br>
+          <span>相关疾病发病危险性: {{ getBMIRisk(theBMIresult) }}</span>
         </view>
       </view>
     </view>
-    <view mt-5>
-      <button bg-green-5  >开始计算！</button>
-    </view>
   </view>
-
 </template>
 
-<style>
+<style scoped>
+/* Add your styles here if needed */
 </style>
