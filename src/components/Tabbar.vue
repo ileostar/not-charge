@@ -24,7 +24,7 @@ function switchPage(url: string) {
     <view class="add-button" :class="getActionClass('addData')" mb-5 text-8 @click="switchPage('/pages/addData')">
       <span i-carbon:add-filled />
     </view>
-    <view :class="getActionClass('gpt')" mb-5 @click="switchPage('/pages/gpt')">
+    <view :class="getActionClass('todoLists')" mb-5 @click="switchPage('/pages/todoLists')">
       <span i-carbon:bot />
     </view>
     <view :class="getActionClass('user')" mb-5 @click="switchPage('/pages/user')">

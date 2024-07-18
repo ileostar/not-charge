@@ -17,10 +17,6 @@
       "type": "page"
     },
     {
-      "path": "pages/gpt",
-      "type": "page"
-    },
-    {
       "path": "pages/myQRCode",
       "type": "page"
     },
@@ -30,6 +26,10 @@
     },
     {
       "path": "pages/scanQRCode",
+      "type": "page"
+    },
+    {
+      "path": "pages/todoLists",
       "type": "page"
     },
     {
