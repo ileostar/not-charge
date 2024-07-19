@@ -1,6 +1,10 @@
 {
   "pages": [
     {
+      "path": "pages/login",
+      "type": "page"
+    },
+    {
       "path": "pages/index",
       "type": "home"
     },
@@ -16,6 +20,7 @@
       "path": "pages/budget",
       "type": "page"
     },
+
     {
       "path": "pages/myQRCode",
       "type": "page"
@@ -26,6 +31,10 @@
     },
     {
       "path": "pages/scanQRCode",
+      "type": "page"
+    },
+    {
+      "path": "pages/testofUser",
       "type": "page"
     },
     {

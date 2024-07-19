@@ -48,19 +48,24 @@ function getResult(value: any) {
   } else {
     amount.value = value
   }
-  console.log("这是value", value);
-  console.log("这是amount.value", amount.value);
 }
 const currentItems = computed(() => currentType.value === 'expense' ? expenseItems : incomeItems)
 
-function addRecord() {
-  console.log('原始 amount.value:', amount.value); // 打印原始值
 
+
+function addRecord() {
   // 确保 amount.value 是一个字符串
   const amountString = amount.value.toString();
+  //从本地获取userId
+  const userInfo = uni.getStorageSync('userInfo');
+  const userId = userInfo.id;
+  console.log("前端代码打印userId",userId);
 
-  console.log('转换后的 amountString:', amountString);
 
+  if (!userId) {
+    console.error('User ID not found in local storage');
+    return;
+  }
   // 将字符串转换为浮点数
   const numericAmount = parseFloat(amountString);
 
@@ -70,6 +75,7 @@ function addRecord() {
   }
 
   const newRecord = {
+    userId: userId, // 添加 userId 参数
     name: name.value,
     icon: icon.value,
     color: color.value,

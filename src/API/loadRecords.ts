@@ -1,21 +1,21 @@
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { getCurrentUserId } from '@/utils/auth'; // 假设你有一个获取当前用户 ID 的工具函数
 
 const records = ref<any[]>([]);
 const budgets = ref<any[]>([]);
 
-export function loadRecords() {
+export function loadRecords(userId: string) { // 修改为接受 userId 参数
   return new Promise((resolve, reject) => {
     uni.request({
-      url: 'http://localhost:3000/api/data',
+      url: `http://localhost:3000/api/data?userId=${userId}`, // 在 URL 中包含 userId
       method: 'GET',
       sslVerify: true,
       success: (res) => {
         if (res.statusCode === 200) {
           const data = Array.isArray(res.data) ? res.data : [];
-          // 解包数据中的对象
           records.value = data.map((record) => {
             return {
-              name: record.name,  // 不再需要 _value
+              name: record.name,
               icon: record.icon,
               color: record.color,
               amount: record.amount,
@@ -23,7 +23,7 @@ export function loadRecords() {
               date: record.date,
             };
           });
-          console.log('获取记录成功', records.value);
+          console.log('获取记录成功', res);
           resolve(records.value);
         } else {
           console.error('获取记录失败', res);
@@ -38,10 +38,10 @@ export function loadRecords() {
   });
 }
 
-export function loadBudgets() {
+export function loadBudgets(userId: string) { // 修改为接受 userId 参数
   return new Promise((resolve, reject) => {
     uni.request({
-      url: 'http://localhost:3000/api/budgets',
+      url: `http://localhost:3000/api/budgets?userId=${userId}`, // 在 URL 中包含 userId
       method: 'GET',
       sslVerify: true,
       success: (res) => {
@@ -62,5 +62,6 @@ export function loadBudgets() {
     });
   });
 }
+
 
 export { records, budgets }

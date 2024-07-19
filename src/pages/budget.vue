@@ -37,7 +37,17 @@ const handleDateChange = (event: any) => {
 
 const saveBudget = async () => {
   if (budgetAmount.value !== null && budgetDate.value !== null) {
+
+    // 从本地存储中获取 userId
+    const userInfo = uni.getStorageSync('userInfo');
+    if (!userInfo || !userInfo.id) {
+      console.error('User ID not found in local storage');
+      return;
+    }
+    const userId = userInfo.id;
+
     const newBudget = {
+      userId: userId, // 添加 userId 参数
       amount: budgetAmount.value,
       date: budgetDate.value
     };
@@ -85,11 +95,18 @@ const saveBudget = async () => {
 };
 
 
-
-
 onMounted(async () => {
   try {
-    await loadBudgets();
+    // 从本地存储中获取 userInfo
+    const userInfo = uni.getStorageSync('userInfo');
+    if (!userInfo || !userInfo.id) {
+      console.error('User ID not found in local storage');
+      return;
+    }
+    const userId = userInfo.id;
+
+    // 调用 loadBudgets 函数并传递 userId 参数
+    await loadBudgets(userId);
     getbudgets.value = budgets.value;
   } catch (error) {
     console.error('加载预算失败', error);

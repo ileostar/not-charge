@@ -15,8 +15,17 @@ interface UniRequestResponse {
 }
 
 export const fetchAllBudgets = async (): Promise<Budget[]> => {
+   // 从本地存储中获取 userId
+   const userInfo = uni.getStorageSync('userInfo');
+   if (!userInfo || !userInfo.id) {
+     console.error('User ID not found in local storage');
+     return [];
+   }
+
+   const userId = userInfo.id;
+
   try {
-    const data = await loadBudgets();
+    const data = await loadBudgets(userId);
     budgets.value = data as Budget[];
     return budgets.value;
   } catch (error) {
@@ -79,4 +88,3 @@ export const updateBudget = async (id: number, data: Partial<Budget>): Promise<{
     return { success: false };
   }
 };
-  

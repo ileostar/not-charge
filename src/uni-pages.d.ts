@@ -8,9 +8,11 @@ interface NavigateToOptions {
        "/pages/addData" |
        "/pages/bankTools" |
        "/pages/budget" |
+       "/pages/login" |
        "/pages/myQRCode" |
        "/pages/salaryCalculator" |
        "/pages/scanQRCode" |
+       "/pages/testofUser" |
        "/pages/todoLists" |
        "/pages/user" |
        "/pages/visual";

@@ -95,6 +95,9 @@ function changeMode(type: string) {
 
 function changeBanktypes(type: string){
   currentRepaytype.value = type;
+  // 清空输入框的值
+  bankProps.forEach(item => item.value = '');
+  theBMIresult.value = '';
 }
 
 /**计算一天电费的开销 */
@@ -133,7 +136,7 @@ function getBMIResult(){
       <!-- 通过计算小工具组件来展示BMI内容 -->
       <CalculatorInput :bankProps="bankProps" :currentRepaytype="currentRepaytype" ref="BMIRef" />
       <view flex items-center justify-between m-3>
-        <span font-800>还款方式</span>
+        <span font-800>参考标准</span>
         <view class="border-solid m-2 rounded-2 flex bg-coolgray overflow-hidden w-47%">
           <span class="flex-1 text-center p-2 justify-end" :class="currentRepaytype === 'china' ? 'bg-rose-400' : ''" @click="changeBanktypes('china')">中国标准</span>
           <span class="flex-1 text-center p-2 justify-end" :class="currentRepaytype === 'international' ? 'bg-rose-400' : ''" @click="changeBanktypes('international')">国际标准</span>

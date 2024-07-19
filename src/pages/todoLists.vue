@@ -16,6 +16,16 @@ const newTodo = ref('');
 function addTodo() {
   if (newTodo.value.trim() !== '') {
     todos.value.unshift({ text: newTodo.value, completed: false });
+    //从本地获取userId
+    const userInfo = uni.getStorageSync('userInfo');
+    const userId = userInfo.id;
+    if (!userId) {
+    console.error('User ID not found in local storage');
+    return;
+    }
+    console.log("newTodo.value:::",newTodo.value);
+
+
     newTodo.value = '';
   }
 }

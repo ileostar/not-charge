@@ -17,6 +17,25 @@ const sequelize = new Sequelize('try', 'root', '123456', {
 })()
 
 
+// 定义用户模型
+const User = sequelize.define('User', {
+  openid: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+  },
+  nickname: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  avatar_url: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
+}, {
+  timestamps: true,
+});
+
 const trysoHard = sequelize.define('trysoHard', {
   name: {
     type: DataTypes.STRING,
@@ -58,6 +77,27 @@ const tryBudget=sequelize.define('tryBudget',{
   }
 })
 
+const Todo = sequelize.define('Todo', {
+  text: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  completed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+});
+
+// 建立外键关联
+User.hasMany(trysoHard, { foreignKey: 'user_id' });
+trysoHard.belongsTo(User, { foreignKey: 'user_id' });
+
+User.hasMany(tryBudget, { foreignKey: 'user_id' });
+tryBudget.belongsTo(User, { foreignKey: 'user_id' });
+
+User.hasMany(Todo, { foreignKey: 'user_id' });
+Todo.belongsTo(User, { foreignKey: 'user_id' });
+
 sequelize.sync()
   .then(() => {
     console.log('Models synchronized successfully.');
@@ -69,7 +109,9 @@ sequelize.sync()
 module.exports = {
   sequelize,
   trysoHard,
-  tryBudget
+  tryBudget,
+  User,
+  Todo
 };
 
 // // 定义记账数据模型

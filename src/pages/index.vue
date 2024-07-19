@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { loadRecords, records, loadBudgets, budgets } from '@/API/loadRecords';
 import { ref, reactive, onMounted, computed } from 'vue';
+import { getCurrentUserId } from '@/utils/auth'; // 导入获取当前用户 ID 的工具函数
 
 const months = reactive(['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']);
 const selectMonths = ref('六月');
@@ -21,9 +22,17 @@ const detailItems = reactive<DetailItem[]>([]);
 const groupedItems = reactive<Record<string, DetailItem[]>>({});
 
 onMounted(async () => {
+
   try {
-    await loadRecords();
-    await loadBudgets();
+    const userId = getCurrentUserId(); // 获取当前用户 ID
+    if (!userId) {
+      console.error('未找到用户 ID');
+      return;
+    }
+    console.log("这是userid",userId,typeof(userId));
+
+    await loadRecords(userId);
+    await loadBudgets(userId);
 
     const currentMonth = new Date().toISOString().slice(0, 7); // 获取当前年份和月份
 

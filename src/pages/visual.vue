@@ -136,7 +136,14 @@ function updateChartData() {
 
 // 获取服务器数据
 const getServerData = async () => {
-  await loadRecords();
+  const userInfo = uni.getStorageSync('userInfo');
+  if (!userInfo || !userInfo.id) {
+    console.error('User ID not found in local storage');
+    return;
+  }
+  const userId = userInfo.id;
+
+  await loadRecords(userId);
 
   // 初始化周数据
   resetWeekData();
