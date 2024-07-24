@@ -1,22 +1,25 @@
-<template>
-	 <view class="container loading6">
-		<view class="shape shape1"></view>
-		<view class="shape shape2"></view>
-		<view class="shape shape3"></view>
-		<view class="shape shape4"></view>
-	</view>
-</template>
+/* eslint-disable */
 
 <script>
-	export default {
-		name: 'loading6',
-		data() {
-			return {
-				
-			};
-		}
-	}
+export default {
+  name: 'Loading6',
+  data() {
+    return {
+
+    }
+  },
+}
 </script>
+
+<template>
+  <view class="loading6 container">
+    <view class="shape shape1" />
+    <view class="shape shape2" />
+    <view class="shape shape3" />
+    <view class="shape shape4" />
+  </view>
+</template>
+
 <style scoped="true">
 .container {
   width: 30px;
@@ -56,7 +59,6 @@
   right: 0;
   background-color: #EE6666;
 }
-
 
 .loading6 .shape1 {
   -webkit-animation: animation6shape1 2s linear 0s infinite normal;

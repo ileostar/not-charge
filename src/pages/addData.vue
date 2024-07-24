@@ -43,61 +43,50 @@ function currentItem(item: { name: string, icon: string, color: string }) {
 }
 function getResult(value: any) {
   result.value = value
-  if (currentType.value === 'expense') {
+  if (currentType.value === 'expense')
     amount.value = (-Number(value)).toString()
-  } else {
+  else
     amount.value = value
-  }
 }
 const currentItems = computed(() => currentType.value === 'expense' ? expenseItems : incomeItems)
 
-
-
 function addRecord() {
   // 确保 amount.value 是一个字符串
-  const amountString = amount.value.toString();
-  //从本地获取userId
-  const userInfo = uni.getStorageSync('userInfo');
-  const userId = userInfo.id;
-
-
+  const amountString = amount.value.toString()
+  // 从本地获取userId
+  const userInfo = uni.getStorageSync('userInfo')
+  const userId = userInfo.id
 
   if (!userId) {
-    console.error('User ID not found in local storage');
-    return;
+    console.error('User ID not found in local storage')
+    return
   }
   // 将字符串转换为浮点数
-  const numericAmount = parseFloat(amountString);
+  const numericAmount = Number.parseFloat(amountString)
 
-  if (isNaN(numericAmount)) {
-    console.error('Invalid amount value:', amountString);
-    return;
+  if (Number.isNaN(numericAmount)) {
+    console.error('Invalid amount value:', amountString)
+    return
   }
 
   const newRecord = {
-    userId: userId, // 添加 userId 参数
+    userId, // 添加 userId 参数
     name: name.value,
     icon: icon.value,
     color: color.value,
     amount: numericAmount,
     note: note.value,
     date: new Date().toISOString(),
-  };
+  }
 
   uni.request({
     url: 'http://localhost:3000/api/data',
     method: 'POST',
     data: newRecord,
-    success: (res) => {
-      if (res.statusCode === 200) {
-      } else {
-        console.error('添加记录失败', res.data);
-      }
-    },
     fail: (err) => {
-      console.error('添加记录失败', err);
+      console.error('添加记录失败', err)
     },
-  });
+  })
 }
 
 // 点击保存收起键盘
@@ -143,7 +132,7 @@ function showKeyboard() {
       <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" @changes-visit="showKeyboard" />
     </view>
     <!-- 键盘 -->
-    <keyboard v-if="visitkb" :currentOFtype="currentType" @result="getResult" @save="addRecord" @changec-visit="closeKeyboard" />
+    <keyboard v-if="visitkb" :current-o-ftype="currentType" @result="getResult" @save="addRecord" @changec-visit="closeKeyboard" />
   </view>
 </template>
 
