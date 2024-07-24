@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-
+import {getTodos,updateTodo,deleteTodo} from '@/API/todoLists'
 // 定义 Todo 接口
 interface Todo {
+  id: number;
   text: string;
   completed: boolean;
 }
@@ -12,33 +13,83 @@ const todos = ref<Todo[]>([]);
 // 新待办事项的文本
 const newTodo = ref('');
 
-// 添加新待办事项
-function addTodo() {
-  if (newTodo.value.trim() !== '') {
-    todos.value.unshift({ text: newTodo.value, completed: false });
-    //从本地获取userId
-    const userInfo = uni.getStorageSync('userInfo');
-    const userId = userInfo.id;
-    if (!userId) {
-    console.error('User ID not found in local storage');
-    return;
-    }
-    console.log("newTodo.value:::",newTodo.value);
+ // 从本地获取userId
+const userInfo = uni.getStorageSync('userInfo');
+const userId = userInfo.id;
 
+
+async function toGetTodo(){
+  try {
+    const loadTodos = await getTodos(userId);
+    // 类型转换和检查
+    if (Array.isArray(loadTodos)) {
+      todos.value = loadTodos.map(item => ({
+        id:item.id,
+        text: item.text || '',
+        completed: item.completed || false
+      }));
+    } else {
+      console.error('Invalid data format:', loadTodos);
+    }
+  } catch (error) {
+    console.error('Failed to fetch todos:', error);
+  }
+}
+
+// 添加新待办事项
+async function addTodo() {
+  if (newTodo.value.trim() !== '') {
+    //todos.value.unshift({ text: newTodo.value, completed: false });
+
+    if (!userId) {
+      console.error('User ID not found in local storage');
+      return;
+    }
+
+    try {
+      await uni.request({
+        url: 'http://localhost:3000/api/todos',
+        method: 'POST',
+        data: { text: newTodo.value, userId },
+      });
+      await toGetTodo();
+      newTodo.value = '';
+    } catch (error) {
+      console.error('Failed to add todo:', error);
+    }
 
     newTodo.value = '';
   }
 }
 
-// 删除待办事项
-function removeTodo(index: number) {
-  todos.value.splice(index, 1);
+// 切换待办事项的完成状态
+async function toggleComplete(index: number) {
+  const todo = todos.value[index];
+  try {
+    // 切换完成状态
+    await updateTodo(todo.id, { completed: !todo.completed });
+    // 更新本地状态
+    todos.value[index].completed = !todos.value[index].completed;
+  } catch (error) {
+    console.error('Failed to update todo:', error);
+  }
 }
 
-// 切换待办事项完成状态
-function toggleComplete(index: number) {
-  todos.value[index].completed = !todos.value[index].completed;
+async function removeTodo(index: number) {
+  const todo = todos.value[index];
+  try {
+    await deleteTodo(todo.id, userId);
+    todos.value.splice(index, 1);
+  } catch (error) {
+    console.error('Failed to delete todo:', error);
+  }
 }
+
+
+
+onMounted(()=>{
+  toGetTodo()
+})
 </script>
 
 <style scoped>

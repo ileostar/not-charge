@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
 const { sequelize, trysoHard, tryBudget,User,Todo } = require('./db');
+const { Op } = require('sequelize');
 
 const app = express();
 const port = 3000;
@@ -28,7 +29,6 @@ app.use((req, res, next) => {
 // 用户登录并获取用户信息
 app.post('/api/login', async (req, res) => {
   const { code, userInfo } = req.body;
-  console.log("这个是userInfo！！！",userInfo);
   const appId = 'wxd953992b45225b91'; // 替换为你的微信小程序的 appId
   const appSecret = 'aec180a033c775821483040dcac7f198'; // 替换为你的微信小程序的 appSecret
 
@@ -40,7 +40,7 @@ app.post('/api/login', async (req, res) => {
 
   try {
     const response = await axios.get(url);
-    console.log('微信API响应:', response.data); // 打印完整的响应
+
 
     const { openid } = response.data;
 
@@ -77,7 +77,6 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/data', async (req, res) => {
   const data = req.body;
   const { userId } = req.body;
-  console.log("11111这是userId：：：：",req.body);
     try {
       const user = await User.findByPk(userId);
       if (!user) {
@@ -94,22 +93,6 @@ app.post('/api/data', async (req, res) => {
   }
 });
 
-// // 将数据存储到数据库中
-// app.post('/api/data', async (req, res) => {
-//   const data = req.body;
-//   console.log('Received data:', data); // 打印接收到的数据
-
-//   try {
-//     await trysoHard.create(data); // 使用模型创建新记录
-//     res.status(200).send('Data stored');
-//   } catch (error) {
-//     console.error('Failed to create record:', error.name); // 打印错误类型
-//     console.error('Error message:', error.message); // 打印错误信息
-//     console.error('Stack trace:', error.stack); // 打印错误堆栈
-//     res.status(500).json({ error: 'Failed to create record', details: error.message });
-//   }
-// });
-
 // 从数据库中获取数据
 app.get('/api/data', async (req, res) => {
   const userId = req.query.userId;
@@ -125,6 +108,33 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
+// 从数据库中获取当前月份数据
+app.get('/api/databymonth', async (req, res) => {
+  const userId = req.query.userId;
+  const monthIndex = req.query.month;
+  const currentYear = new Date().getFullYear();
+  const nextmonthIndex=parseInt(monthIndex)+1
+  // 构造月份的开始和结束日期
+  const startDate = new Date(currentYear, monthIndex, 1, 0, 0, 0, 0);
+  const endDate = new Date(currentYear, nextmonthIndex, 0, 23, 59, 59);
+  if (!userId) {
+    return res.status(400).json({ error: 'userId is required' });
+  }
+  try {
+    const recordsBymonth = await trysoHard.findAll({
+      where: {
+        user_id: userId,
+        date: {
+          [Op.between]: [startDate, endDate]
+        }
+      }
+    });
+    res.json(recordsBymonth);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Error fetching data', details: error.message });
+  }
+});
 
 // 将预算数据存储到数据库中
 app.post('/api/budgets', async (req, res) => {
@@ -146,37 +156,6 @@ app.post('/api/budgets', async (req, res) => {
     res.status(500).json({ error: 'Failed to create record', details: error.message });
   }
 });
-
-// app.post('/api/budgets', async (req, res) => {
-//   const data = req.body;
-//   try {
-//     const newBudget = await tryBudget.create(data);
-//     res.status(200).json(newBudget); // 返回创建的预算对象
-//   } catch (error) {
-//     console.error('Failed to create record:', error.name);
-//     console.error('Error message:', error.message);
-//     console.error('Stack trace:', error.stack);
-//     res.status(500).json({ error: 'Failed to create record', details: error.message });
-//   }
-// });
-
-// app.put('/api/budgets/:id', async (req, res) => {
-//   const id = parseInt(req.params.id);
-//   try {
-//     const budget = await tryBudget.findByPk(id);
-//     if (budget) {
-//       await budget.update(req.body);
-//       res.status(200).json(budget); // 返回更新后的预算对象
-//     } else {
-//       res.status(404).json({ message: 'Budget not found' });
-//     }
-//   } catch (error) {
-//     console.error('Failed to update record:', error.name);
-//     console.error('Error message:', error.message);
-//     console.error('Stack trace:', error.stack);
-//     res.status(500).json({ error: 'Failed to update record', details: error.message });
-//   }
-// });
 
 // 更新预算数据
 app.put('/api/budgets/:id', async (req, res) => {
@@ -221,45 +200,57 @@ app.get('/api/budgets', async (req, res) => {
   }
 });
 
-app.get('/api/todos',async (req,res)=>{
-  const userId=req.query.userId;
+// 获取待办事项
+app.get('/api/todos', async (req, res) => {
+  const userId = req.query.userId;
   if (!userId) {
     return res.status(400).json({ error: 'userId is required' });
   }
   try {
-    const todos=await Todo.findAll({where:{user_id: userId}})
-    res.json(todos)
+    const todos = await Todo.findAll({ where: { user_id: userId } });
+    res.json(todos);
   } catch (error) {
     console.error('Error fetching todos:', error);
     res.status(500).send('Error fetching todos');
   }
-})
+});
 
-app.post('/api/todos',async (req,res)=>{
+// 添加待办事项
+app.post('/api/todos', async (req, res) => {
   const { text, userId } = req.body;
   try {
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    const todo = await Todo.create({ text, userId });
+    const todo = await Todo.create({ text, user_id: userId });
     res.status(201).json(todo);
   } catch (error) {
     console.error('Error creating todo:', error);
     res.status(500).json({ error: 'Error creating todo' });
   }
-})
+});
 
 // 更新待办事项
 app.put('/api/todos/:id', async (req, res) => {
   const id = parseInt(req.params.id);
-  const { completed } = req.body;
+  const { text, completed } = req.body;
+
   try {
     const todo = await Todo.findByPk(id);
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' });
     }
-    await todo.update({ completed });
+
+    // 更新待办事项的状态和文本
+    if (typeof completed === 'boolean') {
+      todo.completed = completed;
+    }
+    if (text) {
+      todo.text = text;
+    }
+    await todo.save();
+
     res.json(todo);
   } catch (error) {
     console.error('Error updating todo:', error);
@@ -267,13 +258,13 @@ app.put('/api/todos/:id', async (req, res) => {
   }
 });
 
-// 删除待办事项
 app.delete('/api/todos/:id', async (req, res) => {
   const id = parseInt(req.params.id);
+  const { userId } = req.body;
   try {
     const todo = await Todo.findByPk(id);
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo not found' });
+    if (!todo || todo.user_id !== userId) {
+      return res.status(404).json({ error: 'Todo not found or unauthorized' });
     }
     await todo.destroy();
     res.status(204).send();
@@ -282,6 +273,7 @@ app.delete('/api/todos/:id', async (req, res) => {
     res.status(500).json({ error: 'Error deleting todo' });
   }
 });
+
 
 
 // 获取用户的总记账天数和总记账笔数
@@ -303,9 +295,8 @@ app.get('/api/stats', async (req, res) => {
 });
 
 
-// Handle requests to the root path
 app.get('/', (req, res) => {
-  res.send('Welcome to my API server'); // Replace with your message or HTML content
+  res.send('Welcome to my API server');
 });
 
 app.listen(port, async () => {

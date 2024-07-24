@@ -59,7 +59,7 @@ function addRecord() {
   //从本地获取userId
   const userInfo = uni.getStorageSync('userInfo');
   const userId = userInfo.id;
-  console.log("前端代码打印userId",userId);
+
 
 
   if (!userId) {
@@ -90,7 +90,6 @@ function addRecord() {
     data: newRecord,
     success: (res) => {
       if (res.statusCode === 200) {
-        console.log('添加记录成功', res.data);
       } else {
         console.error('添加记录失败', res.data);
       }

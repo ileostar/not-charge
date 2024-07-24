@@ -15,6 +15,67 @@ const userSelectOption2 = reactive([
   { url: '/pages/settings', title: '设置', icon: 'i-icon-park:setting ' },
 ])
 
+//头像姓名编写能力
+// 用户信息
+const userinfo = ref({
+  avatar_url: '',
+  nickname: ''
+});
+
+const myStats = ref({
+  totalDays: '',
+  totalEntries: ''
+});
+
+interface Stats {
+  totalDays: string;
+  totalEntries: string;
+}
+
+//从本地获取userId
+const userInfo = uni.getStorageSync('userInfo');
+const userId = userInfo.id;
+function getStats(){
+  uni.request({
+    url: 'http://localhost:3000/api/stats',
+    data: {userId},
+    method: 'GET',
+    success: (res) => {
+      const stats = res.data as Stats;
+      myStats.value.totalDays = stats.totalDays;
+      myStats.value.totalEntries = stats.totalEntries;
+    },
+    fail: (error) => {
+      console.log(error);
+    }
+  })
+}
+
+
+// 选择头像
+function onChooseAvatar(e: any) {
+
+  const { avatarUrl } = e.detail;
+  if (avatarUrl && avatarUrl.length > 0) {
+    userinfo.value.avatar_url = avatarUrl;
+    uni.setStorageSync('userInfo', userinfo.value);
+  }
+}
+
+// 页面加载时获取用户信息
+onMounted(async () => {
+  const temp = uni.getStorageSync('userInfo');
+  await getStats()
+  if (temp) {
+    userinfo.value = temp;
+  } else {
+    // 设置默认值或处理未登录状态
+    userinfo.value = {
+      avatar_url: 'default_avatar_url', // 设置默认头像
+      nickname: '默认昵称'
+    };
+  }
+});
 </script>
 
 <template>
@@ -22,10 +83,13 @@ const userSelectOption2 = reactive([
     <!-- 上部分 -->
     <view class="top-section flex items-center justify-between">
       <view class="flex items-center">
-        <image class="user-avatar rounded-full" src="../static/user.jpg" mode="aspectFill" />
+         <!-- 使用 open-type="chooseAvatar" 和 @chooseavatar 进行事件绑定 -->
+         <button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" >
+          <image class="user-avatar rounded-full" :src='userinfo.avatar_url' mode="aspectFill" />
+        </button>
         <view class="ml-4">
           <text class="text-black font-bold">
-            阿木木
+            {{ userinfo.nickname || '默认昵称' }}
           </text>
           <text class="block text-gray-500">
             记账让我自律
@@ -41,7 +105,7 @@ const userSelectOption2 = reactive([
     <view class="stats-section mt-2 flex justify-around py-4">
       <view class="text-center">
         <text class="block color-black font-bold">
-          10
+          66
         </text>
         <text text-gray-500>
           打卡总天数
@@ -49,7 +113,7 @@ const userSelectOption2 = reactive([
       </view>
       <view text-center>
         <text class="block color-black font-bold">
-          21
+          {{ myStats.totalDays }}
         </text>
         <text text-gray-500>
           记账总天数
@@ -57,7 +121,7 @@ const userSelectOption2 = reactive([
       </view>
       <view text-center>
         <text class="block color-black font-bold">
-          80
+          {{ myStats.totalEntries }}
         </text>
         <text text-gray-500>
           记账总笔数
@@ -91,7 +155,7 @@ const userSelectOption2 = reactive([
   justify-content: center;
   min-width: 70px;
   border-radius: 9999px; /* 半圆按钮 */
-  font-size: 15px
+  font-size: 15px;
 }
 .iconify {
   color: #f8c43d; /* 默认颜色，可以根据需要修改 */

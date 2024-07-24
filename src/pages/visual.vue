@@ -238,7 +238,6 @@ function resetYearData() {
 }
 
 // 组件挂载时获取数据
-import { onMounted } from 'vue';
 onMounted(() => {
   getServerData();
 });

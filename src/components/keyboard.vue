@@ -53,7 +53,6 @@ function sum() {
       displayinput.value = result;
     } else {
       const numericResult = Number.parseFloat(result);
-      console.log("这是支出的numericResult",numericResult);
 
       if (!Number.isNaN(numericResult)) {
         displayinput.value = (-numericResult).toString();
@@ -62,10 +61,7 @@ function sum() {
         console.error('Invalid input:', result);
       }
     }
-    console.log("这是支出的displayinput",displayinput);
-    console.log("这是支出的displayinput.value",displayinput.value);
     emit('save', displayinput.value); // 确保传递字符串
-    console.log("这是支出的displayinput.value,注意，这里已经传出去了",displayinput.value);
     displayinput.value = '';
     emit('result', displayinput.value); // 确保传递字符串
     emit('changecVisit', false);

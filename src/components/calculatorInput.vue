@@ -2,9 +2,7 @@
 const props = defineProps(['fiexedOFair', 'frequencyOFair', 'currentMode','bankProps','currentRepaytype']);
 const result=ref()
 const bmiResult=ref()
-// const selectMode = computed(() => {
-//   return props.currentMode === 'isFixed' ? props.fiexedOFair : props.frequencyOFair;
-// });
+
 
 // 根据当前模式选择输入框的数据
 const selectMode = computed(() => {

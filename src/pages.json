@@ -1,26 +1,25 @@
 {
   "pages": [
     {
-      "path": "pages/login",
-      "type": "page"
-    },
-    {
       "path": "pages/index",
       "type": "home"
+    },
+    {
+      "path": "pages/about",
+      "type": "page"
     },
     {
       "path": "pages/addData",
       "type": "page"
     },
     {
-      "path": "pages/bankTools",
-      "type": "page"
-    },
-    {
       "path": "pages/budget",
       "type": "page"
     },
-
+    {
+      "path": "pages/login",
+      "type": "page"
+    },
     {
       "path": "pages/myQRCode",
       "type": "page"
@@ -31,10 +30,6 @@
     },
     {
       "path": "pages/scanQRCode",
-      "type": "page"
-    },
-    {
-      "path": "pages/testofUser",
       "type": "page"
     },
     {

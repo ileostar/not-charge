@@ -32,34 +32,5 @@ const formattedDate = (date: string) => {
   }) : '';
 };
 
-const handleTouchStart = (index: number, event: TouchEvent) => {
-  startX.value = event.touches[0].clientX;
-  startY.value = event.touches[0].clientY;
-  touchMoved.value = false;
-};
-
-const handleTouchMove = (index: number, event: TouchEvent) => {
-  const deltaX = event.touches[0].clientX - startX.value;
-  const deltaY = event.touches[0].clientY - startY.value;
-
-  if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    // 水平移动大于垂直移动时，认定为滑动操作
-    touchMoved.value = true;
-  }
-};
-
-const handleTouchEnd = (index: number) => {
-  if (touchMoved.value) {
-    // 如果发生了滑动操作，执行删除逻辑
-    deleteBudget(index);
-  }
-};
-
-const deleteBudget = (index: number) => {
-  // 触发删除操作，可以向父组件 emit 一个事件，或者直接在这里处理删除逻辑
-  console.log('删除预算', index);
-  // 假设 budgets 是响应式数据，在实际项目中需要修改 budgets 数组
-  // 如：budgets.value.splice(index, 1);
-};
 </script>
 

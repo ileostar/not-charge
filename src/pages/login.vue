@@ -5,23 +5,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
 const getUserProfile = () => {
   // 用户点击后执行 getUserProfile 函数
   uni.getUserProfile({
-    desc: '用于完善会员资料',
+    desc: '获取你的昵称、头像、地区及性别',
     success: (userProfileRes) => {
-      console.log('用户信息:', userProfileRes.userInfo);
 
       // 调用微信登录接口
       uni.login({
         provider: 'weixin',
         success: (loginRes) => {
-          console.log('登录成功', loginRes.code);
 
           // 发送请求到后端
           uni.request({
@@ -32,15 +25,20 @@ const getUserProfile = () => {
               userInfo: userProfileRes.userInfo
             },
             success: (res) => {
-              console.log('后端返回的数据:', res.data);
 
               // 类型检查和断言
               if (typeof res.data === 'object' && res.data !== null && 'userInfo' in res.data) {
                 const userInfo = res.data.userInfo;
+                // 设置登录过期时间为7天后
+                const now = new Date();
+                const expireTime = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7天后过期
                 // 保存用户信息，比如 userId
                 uni.setStorageSync('userInfo', userInfo);
+                //保存用户登录过期时间
+                uni.setStorageSync('loginTime', now.toISOString());
+                uni.setStorageSync('expireTime', expireTime.toISOString());
                 // 跳转到首页或其他页面
-                uni.navigateTo({ url: '/pages/testofUser' });
+                uni.reLaunch({ url: '/pages/index' });
               } else {
                 console.error('响应数据不包含 userInfo 属性');
               }

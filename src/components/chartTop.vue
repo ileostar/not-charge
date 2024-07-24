@@ -14,7 +14,7 @@ function changeToincome(){
 }
 function changeLimitdate(type:string){
   currentTime.value=type
-  console.log(type);
+
   emit('selectLimitdate',type)
 }
 </script>
