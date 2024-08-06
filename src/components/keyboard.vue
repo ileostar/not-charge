@@ -93,7 +93,7 @@ function deleteText() {
     emit('result', displayinput.value) // 确保传递字符串
   }
   else {
-    displayinput.value = '0'
+    displayinput.value = ''
     emit('result', displayinput.value) // 确保传递字符串
   }
 }

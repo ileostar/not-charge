@@ -62,6 +62,7 @@
     "@dcloudio/uni-mp-xhs": "3.0.0-alpha-4000020240111001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-4000020240111001",
     "@vueuse/core": "^10.7.2",
+    "axios": "^1.7.2",
     "echarts": "^5.5.1",
     "mysql2": "^3.10.2",
     "rollup-plugin-node-resolve": "^5.2.0",

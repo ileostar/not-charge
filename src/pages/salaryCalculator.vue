@@ -133,7 +133,7 @@ function getBMIResult() {
         </view>
       </view>
     </view>
-    <!-- BMMI模式 -->
+    <!-- BMI模式 -->
     <view v-else-if="currentType === 'bank'">
       <!-- 通过计算小工具组件来展示BMI内容 -->
       <CalculatorInput ref="BMIRef" :bank-props="bankProps" :current-repaytype="currentRepaytype" />

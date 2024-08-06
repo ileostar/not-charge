@@ -48,6 +48,7 @@ function getResult(value: any) {
   else
     amount.value = value
 }
+//显示相对应的九宫格
 const currentItems = computed(() => currentType.value === 'expense' ? expenseItems : incomeItems)
 
 function addRecord() {
@@ -132,7 +133,7 @@ function showKeyboard() {
       <GridComponent :items="currentItems" :selected-item="selectedItem" :current-item="currentItem" @changes-visit="showKeyboard" />
     </view>
     <!-- 键盘 -->
-    <keyboard v-if="visitkb" :current-o-ftype="currentType" @result="getResult" @save="addRecord" @changec-visit="closeKeyboard" />
+    <keyboard v-if="visitkb" :current-of-type="currentType" @result="getResult" @save="addRecord" @changec-visit="closeKeyboard" />
   </view>
 </template>
 
