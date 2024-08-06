@@ -5,10 +5,14 @@
 
 interface NavigateToOptions {
   url: "/pages/index" |
+       "/pages/about" |
        "/pages/addData" |
-       "/pages/gpt" |
+       "/pages/budget" |
+       "/pages/login" |
        "/pages/myQRCode" |
+       "/pages/salaryCalculator" |
        "/pages/scanQRCode" |
+       "/pages/todoLists" |
        "/pages/user" |
        "/pages/visual";
 }

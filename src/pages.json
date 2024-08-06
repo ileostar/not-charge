@@ -5,11 +5,19 @@
       "type": "home"
     },
     {
+      "path": "pages/about",
+      "type": "page"
+    },
+    {
       "path": "pages/addData",
       "type": "page"
     },
     {
-      "path": "pages/gpt",
+      "path": "pages/budget",
+      "type": "page"
+    },
+    {
+      "path": "pages/login",
       "type": "page"
     },
     {
@@ -17,7 +25,15 @@
       "type": "page"
     },
     {
+      "path": "pages/salaryCalculator",
+      "type": "page"
+    },
+    {
       "path": "pages/scanQRCode",
+      "type": "page"
+    },
+    {
+      "path": "pages/todoLists",
       "type": "page"
     },
     {
